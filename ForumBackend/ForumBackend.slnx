@@ -1,0 +1,12 @@
+<Solution>
+  <Folder Name="/servicebase/">
+    <Project Path="commons/commons.csproj" Id="641a3f9d-bae4-4400-8593-9b02545e1b69" />
+    <Project Path="database/database.csproj" Id="8f88f7cc-09f9-46ac-ac16-505c42b90361" />
+    <Project Path="security/security.csproj" Id="271aab71-9f3d-482e-ba8d-e9360f0eaf55" />
+  </Folder>
+  <Project Path="docker-compose.dcproj">
+    <Build />
+  </Project>
+  <Project Path="http/http.csproj" Id="5d17aad5-089c-4153-844c-fe85ce8ca648" />
+  <Project Path="users/users.csproj" Id="4740fc7a-c852-4149-95b9-a561aa596fd7" />
+</Solution>

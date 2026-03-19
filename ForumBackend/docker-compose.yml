@@ -1,0 +1,41 @@
+version: '3.8'
+
+volumes:
+  mongo_data:
+
+services:
+  mongo:
+      image: mongo:latest
+      restart: always
+      command: ["mongod", "--quiet", "--logpath", "/dev/null"]
+      ports:
+        - "27017:27017"
+      volumes:
+        - mongo_data:/data/db
+
+  http:
+    image: http
+    build:
+      context: .
+      dockerfile: http/Dockerfile
+    ports:
+      - "5000:8080"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - GrpcServices__UsersService=http://users-service:8080
+    depends_on:
+      - users
+
+  users:
+    image: users
+    build:
+      context: .              
+      dockerfile: users/Dockerfile
+    ports:
+      - "5001:8080"           
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - MongoDB__ConnectionString=mongodb://mongo:27017/
+      - MongoDB__DatabaseName=users
+    depends_on:
+      - mongo

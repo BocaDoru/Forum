@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+import "Protos/common.proto";
+
+option csharp_namespace = "usersServiceClient";
+
+package usersService;
+
+service usersService
+{
+	rpc GetUserById (UserIdRequest) returns (commons.protos.MessageResponse);
+}
+
+message UserIdRequest
+{
+    string id = 1;
+}
