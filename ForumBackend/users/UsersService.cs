@@ -11,4 +11,10 @@ public class UsersService(MessageDispatcher dispatcher) : usersService.usersServ
 
     public override Task<MessageResponse> GetUserById(UserIdRequest request, ServerCallContext serverCallContext)
         => _dispatcher.DispatchAsync(request, serverCallContext.CancellationToken);
+
+    public override Task<MessageResponse> RegisterUser(RegisterRequest request, ServerCallContext serverCallContext)
+        => _dispatcher.DispatchAsync(request, serverCallContext.CancellationToken);
+
+    public override Task<MessageResponse> AuthUser(AuthRequest request, ServerCallContext serverCallContext)
+        => _dispatcher.DispatchAsync(request, serverCallContext.CancellationToken);
 }

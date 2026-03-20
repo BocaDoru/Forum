@@ -5,6 +5,7 @@ using commons.Protos;
 using FastEndpoints;
 using Microsoft.Extensions.Logging;
 using http.Auth;
+using commons.MessageBase;
 
 namespace http.Endpoints;
 

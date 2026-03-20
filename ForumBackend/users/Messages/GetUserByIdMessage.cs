@@ -1,5 +1,4 @@
 ﻿using commons.MessageBase;
-using Microsoft.Extensions.Logging;
 using users.Implementations;
 using users.Models;
 using usersServiceClient;
