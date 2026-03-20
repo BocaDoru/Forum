@@ -4,9 +4,8 @@
     <TargetFramework>net10.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <UserSecretsId>6bea5552-e8e3-4d49-9e49-aed97fe8297f</UserSecretsId>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
-    <DockerComposeProjectPath>..\docker-compose.dcproj</DockerComposeProjectPath>
+    <UserSecretsId>23a5f66d-ed0f-4a4f-b84c-3f35284b6c04</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>

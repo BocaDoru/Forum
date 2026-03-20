@@ -14,16 +14,11 @@ namespace http.Auth;
 public static class ForumPolicy
 {
     public const string AuthenticatedUser = "Authenticated";
-    public const string UnverifiedUser = "Unverified";
+    public const string UnauthenticatedUser = "Unauthenticated";
 
     public static AuthorizationPolicy AuthenticatedUserPolicy { get; } = new AuthorizationPolicyBuilder()
         .RequireClaim(UserJwtExtensions.IdClaim)
         .RequireClaim(UserJwtExtensions.IsBannedClaim, "false")
-        .RequireAuthenticatedUser()
-        .Build();
-
-    public static AuthorizationPolicy UnverifiedUserPolicy { get; } = new AuthorizationPolicyBuilder()
-        .RequireClaim(UserJwtExtensions.IdClaim)
         .RequireAuthenticatedUser()
         .Build();
 }

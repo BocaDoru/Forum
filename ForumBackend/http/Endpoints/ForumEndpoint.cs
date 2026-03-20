@@ -40,7 +40,7 @@ public abstract class ForumEndpointBase<TReq>(ILogger logger) : Endpoint<TReq, J
 {
     protected void AllowUnverifiedUser()
     {
-        Policies(ForumPolicy.UnverifiedUser);
+        Policies(ForumPolicy.UnauthenticatedUser);
     }
 
     protected string GetUserId()

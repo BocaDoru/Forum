@@ -1,4 +1,5 @@
 ﻿using commons.Protos;
+using http.Auth;
 using http.Endpoints;
 using Microsoft.Extensions.Logging;
 using usersServiceClient;
@@ -12,7 +13,7 @@ public class GetUserById(ILogger<GetUserById> logger) : ForumEndpoint<string>(lo
     public override void Configure()
     {
         Get("api/users/user");
-        //Policies(ForumPolicy.AuthenticatedUser);
+        AllowAnonymous();
     }
 
     public override async Task HandleAsync(string req, CancellationToken cancellationToken)
