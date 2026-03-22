@@ -9,9 +9,25 @@ package usersService;
 service usersService
 {
 	rpc GetUserById (UserIdRequest) returns (commons.protos.MessageResponse);
+	rpc RegisterUser (RegisterRequest) returns (commons.protos.MessageResponse);
+	rpc AuthUser (AuthRequest) returns (commons.protos.MessageResponse);
 }
 
 message UserIdRequest
 {
     string id = 1;
+}
+
+message RegisterRequest
+{
+    string email = 1;
+	string username = 2;
+	string password = 3;
+	bool isModerator = 4;
+}
+
+message AuthRequest
+{
+    string email = 1;
+	string password = 2;
 }

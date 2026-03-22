@@ -14,9 +14,9 @@ public record UserJwt
 public static class UserJwtExtensions
 {
     public const string IdClaim = JwtRegisteredClaimNames.Sub;
-    public const string IsModeratorClaim = "isModerator";
     public const string NameClaim = JwtRegisteredClaimNames.Name;
     public const string EmailClaim = JwtRegisteredClaimNames.Email;
+    public const string IsModeratorClaim = "isModerator";
     public const string IsBannedClaim = "isBanned";
 
     private static readonly JwtSecurityTokenHandler s_jwtHandler = new();
@@ -25,9 +25,9 @@ public static class UserJwtExtensions
     {
         return [
             new Claim(IdClaim, jwt.Id),
-            new Claim(IsModeratorClaim, jwt.IsModerator.ToString().ToLowerInvariant()),
             new Claim(NameClaim, jwt.Name),
             new Claim(EmailClaim, jwt.Email),
+            new Claim(IsModeratorClaim, jwt.IsModerator.ToString().ToLowerInvariant()),
             new Claim(IsBannedClaim, jwt.IsBanned.ToString().ToLowerInvariant())
         ];
     }
@@ -37,9 +37,9 @@ public static class UserJwtExtensions
         return new UserJwt
         {
             Id = GetClaims(claims, IdClaim),
-            IsModerator = GetClaims(claims, IsModeratorClaim) == "true",
             Name = GetClaims(claims, NameClaim),
             Email = GetClaims(claims, EmailClaim),
+            IsModerator = GetClaims(claims, IsModeratorClaim) == "true",
             IsBanned = GetClaims(claims, IsBannedClaim) == "true"
         };
     }

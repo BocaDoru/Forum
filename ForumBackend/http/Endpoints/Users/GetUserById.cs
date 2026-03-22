@@ -2,6 +2,7 @@
 using http.Auth;
 using http.Endpoints;
 using Microsoft.Extensions.Logging;
+using Namotion.Reflection;
 using usersServiceClient;
 
 namespace http.Endpoints.Users;
@@ -24,12 +25,12 @@ public class GetUserById(ILogger<GetUserById> logger) : ForumEndpoint<string>(lo
             return;
         }
 
-        var grpcRequest = new UserIdRequest
+        var grpcReq = new UserIdRequest
         {
             Id = req
         };
 
-        MessageResponse response = await Client.GetUserByIdAsync(grpcRequest, null, null, cancellationToken);
+        MessageResponse response = await Client.GetUserByIdAsync(grpcReq, null, null, cancellationToken);
         await SendAsync(response, cancellationToken: cancellationToken);
     }
 }
