@@ -1,0 +1,86 @@
+﻿syntax = "proto3";
+
+import "Protos/common.proto";
+
+option csharp_namespace = "forumServiceClient";
+
+package forumService;
+
+service forumService
+{
+	rpc CreateQuestion (CreateQuestionRequest) returns (commons.protos.MessageResponse);
+	rpc EditQuestion (EditQuestionRequest) returns (commons.protos.MessageResponse);
+	rpc DeleteQuestion (DeleteQuestionRequest) returns (commons.protos.MessageResponse);
+	rpc GetQuestionById (QuestionIdRequest) returns (commons.protos.MessageResponse);
+	rpc GetQuestions (QuestionsRequest) returns (commons.protos.MessageResponse);
+	rpc GetQuestionsByAuthor (QuestionsByAuthorRequest) returns (commons.protos.MessageResponse);
+	rpc GetQuestionsByTitle (QuestionsByTitleRequest) returns (commons.protos.MessageResponse);
+	rpc GetQuestionsByTag (QuestionsByTagRequest) returns (commons.protos.MessageResponse);
+	rpc CreateTag (CreateTagRequest) returns (commons.protos.MessageResponse);
+	rpc GetTagByName (TagNameRequest) returns (commons.protos.MessageResponse);
+}
+
+message CreateQuestionRequest
+{
+	string authorId = 1;
+	string title = 2;
+	string text = 3;
+	optional string imageId = 4;
+	repeated string tagIds = 5;
+}
+
+message EditQuestionRequest
+{
+	string questionId = 1;
+	string userId = 2;
+	string title = 3;
+	string text = 4;
+	optional string imageId = 5;
+	repeated string tagIds = 6;
+	string status = 7;
+}
+
+message DeleteQuestionRequest
+{
+	string questionId = 1;
+	string userId = 2;
+}
+
+message QuestionIdRequest
+{
+	string questionId = 1;
+}
+
+message QuestionsRequest
+{
+	int32 skip = 1;
+	int32 limit = 2;
+}
+
+message QuestionsByAuthorRequest
+{
+	QuestionsRequest pagination = 1;
+	string authorId = 2;
+}
+
+message QuestionsByTitleRequest
+{
+	QuestionsRequest pagination = 1;
+	string title = 2;
+}
+
+message QuestionsByTagRequest
+{
+	QuestionsRequest pagination = 1;
+	string tag = 2;
+}
+
+message CreateTagRequest
+{
+	string name = 1;
+}
+
+message TagNameRequest
+{
+	string name = 1;
+}
