@@ -3,7 +3,7 @@ using forum.Implementations;
 using forum.Models;
 using forumServiceClient;
 
-namespace forum.Messages;
+namespace forum.Messages.Questions;
 
 public class GetQuestionByIdMessage(
     ILogger<GetQuestionByIdMessage> logger,
