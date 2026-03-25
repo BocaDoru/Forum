@@ -14,7 +14,7 @@ public class GetUserById(ILogger<GetUserById> logger) : ForumEndpoint<string>(lo
     public override void Configure()
     {
         Get("api/users/user");
-        AllowAnonymous();
+        Policies(ForumPolicy.AuthenticatedUser);
     }
 
     public override async Task HandleAsync(string req, CancellationToken cancellationToken)
