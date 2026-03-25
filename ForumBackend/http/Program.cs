@@ -1,12 +1,10 @@
 ﻿using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Builder;
-using usersServiceClient;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
-using Microsoft.AspNetCore.Hosting;
 using System.Net;
-using Microsoft.Extensions.DependencyInjection;
 using http.Auth;
 using FastEndpoints;
+using usersServiceClient;
+using forumServiceClient;
 
 AppContext.SetSwitch("System.Net.Http.SocketsHttpHandler.Http2UnencryptedSupport", true);
 
@@ -25,6 +23,12 @@ builder.WebHost.ConfigureKestrel(options =>
 builder.Services.AddGrpcClient<usersService.usersServiceClient>(o =>
 {
     string? address = builder.Configuration["GrpcServices:UsersService"];
+    o.Address = new Uri(address!);
+});
+
+builder.Services.AddGrpcClient<forumService.forumServiceClient>(o =>
+{
+    string? address = builder.Configuration["GrpcServices:ForumService"];
     o.Address = new Uri(address!);
 });
 
