@@ -2,6 +2,17 @@ volumes:
   mongo_data:
 
 services:
+  servicetest:
+    image: servicetest
+    build:
+      context: .              
+      dockerfile: servicetest/Dockerfile
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - GatewayUrl=http://http:8080 
+    depends_on:
+      - http
+
   mongo:
       image: mongo:latest
       restart: always
