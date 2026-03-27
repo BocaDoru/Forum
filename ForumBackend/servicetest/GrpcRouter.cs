@@ -71,7 +71,9 @@ public static class GrpcRouter
         {
             if (!Clients.TryGetValue(serviceName, out var client))
             {
+                Console.ForegroundColor = ConsoleColor.Yellow;
                 Console.WriteLine($"[Error] Service '{serviceName}' not found.");
+                Console.ResetColor();
                 return;
             }
 
@@ -87,9 +89,11 @@ public static class GrpcRouter
                 m.Name.Equals(messageName, StringComparison.OrdinalIgnoreCase) && 
                 m.GetParameters().Length == 2);
 
-            if (method == null)
+            if (method is null)
             {
+                Console.ForegroundColor = ConsoleColor.Yellow;
                 Console.WriteLine($"[Error] Message '{messageName}' not found.");
+                Console.ResetColor();
                 return;
             }
 
