@@ -1,0 +1,32 @@
+FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
+WORKDIR /src
+
+COPY servicetest/servicetest.csproj ./servicetest/
+
+RUN dotnet restore servicetest/servicetest.csproj
+
+COPY . .
+
+WORKDIR "/src/servicetest"
+RUN dotnet publish "servicetest.csproj" -c Release -o /app/publish
+
+FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS final
+WORKDIR /app
+EXPOSE 8080
+COPY --from=build /app/publish .
+ENTRYPOINT ["dotnet", "servicetest.dll"]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

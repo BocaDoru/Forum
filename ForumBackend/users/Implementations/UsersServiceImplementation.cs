@@ -48,7 +48,7 @@ public class UsersServiceImplementation(
         if (user is null)
         {
             _logger.LogInformation("User with email:{email} was not found.", email);
-            throw new BadRequestException("Invalid email or password.");
+            throw new UnauthorizedException("Invalid email or password.");
         }
 
         if (user.IsBanned)
@@ -60,7 +60,7 @@ public class UsersServiceImplementation(
         if (!VerifyPassword(password, user.Password))
         {
             _logger.LogInformation("Invalid password for email:{email}.", email);
-            throw new BadRequestException("Invalid email or password.");
+            throw new UnauthorizedException("Invalid email or password.");
         }
 
         var jwtToken = GenerateJwtToken(user.Id, user.Username, email, user.IsModerator);
