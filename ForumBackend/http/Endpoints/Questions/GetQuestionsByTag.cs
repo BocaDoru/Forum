@@ -1,9 +1,8 @@
 ﻿using commons.Protos;
-using FastEndpoints;
 using forumServiceClient;
 using http.Auth;
 
-namespace http.Endpoints.Users;
+namespace http.Endpoints.Questions;
 
 public class GetQuestionsByTag(ILogger<GetQuestionsByTag> logger) : ForumEndpoint<string>(logger)
 {

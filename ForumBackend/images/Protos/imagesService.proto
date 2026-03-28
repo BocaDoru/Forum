@@ -1,0 +1,24 @@
+﻿syntax = "proto3";
+
+import "Protos/common.proto";
+
+option csharp_namespace = "imagesServiceClient";
+
+package imagesService;
+
+service imagesService
+{
+	rpc Upload (UploadRequest) returns (commons.protos.MessageResponse);
+	rpc Download (DownloadRequest) returns (commons.protos.MessageResponse);
+}
+
+message UploadRequest
+{
+	string fileName = 1;
+	bytes data = 3;
+}
+
+message DownloadRequest
+{
+	string fileId = 1;
+}

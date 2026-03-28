@@ -3,9 +3,9 @@ using FastEndpoints;
 using forumServiceClient;
 using http.Auth;
 
-namespace http.Endpoints.Users;
+namespace http.Endpoints.Questions;
 
-public class GetQuestions(ILogger<GetQuestionsByTitle> logger) : ForumEndpoint(logger)
+public class GetQuestions(ILogger<GetQuestions> logger) : ForumEndpoint(logger)
 {
     public forumService.forumServiceClient Client { get; set; } = default!;
 
