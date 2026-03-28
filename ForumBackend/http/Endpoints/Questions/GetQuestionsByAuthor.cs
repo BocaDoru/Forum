@@ -10,7 +10,7 @@ public class GetQuestionsByAuthor(ILogger<GetQuestionsByAuthor> logger) : ForumE
 
     public override void Configure()
     {
-        Get("api/questions/author/page{page}");
+        Get("api/questions/author/page={page}");
         Policies(ForumPolicy.AuthenticatedUser);
     }
 
