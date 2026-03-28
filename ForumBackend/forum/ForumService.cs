@@ -38,4 +38,14 @@ public class ForumService(MessageDispatcher dispatcher) : forumService.forumServ
 
     public override Task<MessageResponse> GetTagByName(TagNameRequest request, ServerCallContext serverCallContext)
        => _dispatcher.DispatchAsync(request, serverCallContext.CancellationToken);
+
+    public override Task<MessageResponse> CreateComment(CreateCommentRequest request, ServerCallContext context)
+       => _dispatcher.DispatchAsync(request, context.CancellationToken);
+
+    public override Task<MessageResponse> EditComment(EditCommentRequest request, ServerCallContext context)
+       => _dispatcher.DispatchAsync(request, context.CancellationToken);
+
+    public override Task<MessageResponse> DeleteComment(DeleteCommentRequest request, ServerCallContext context)
+       => _dispatcher.DispatchAsync(request, context.CancellationToken);
+
 }
