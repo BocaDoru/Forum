@@ -13,5 +13,4 @@
   <Project Path="forum/forum.csproj" Id="e390b55f-184a-46e4-b3da-c5c6198665dc" />
   <Project Path="http/http.csproj" Id="5d17aad5-089c-4153-844c-fe85ce8ca648" />
   <Project Path="users/users.csproj" Id="4740fc7a-c852-4149-95b9-a561aa596fd7" />
-  <Project Path="votes/votes.csproj" Id="5f0f2727-01fd-4b48-9025-9ff250f4584e" />
 </Solution>

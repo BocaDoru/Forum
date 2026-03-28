@@ -20,6 +20,7 @@
   <ItemGroup>
     <Protobuf Include="Protos\forumService.proto" AdditionalImportDirs="../commons" GrpcServices="Server" />
     <Protobuf Include="..\users\Protos\usersService.proto" AdditionalImportDirs="../commons" GrpcServices="Client" Link="Protos\usersService.proto" />
+	<Protobuf Include="Protos\votesService.proto" AdditionalImportDirs="../commons" GrpcServices="Server" />
   </ItemGroup>
 
 </Project>
