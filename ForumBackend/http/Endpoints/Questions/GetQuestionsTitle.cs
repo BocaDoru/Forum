@@ -10,7 +10,7 @@ public class GetQuestionsByTitle(ILogger<GetQuestionsByTitle> logger) : ForumEnd
 
     public override void Configure()
     {
-        Get("api/questions/title/page{page}");
+        Get("api/questions/title/page={page}");
         Policies(ForumPolicy.AuthenticatedUser);
     }
 

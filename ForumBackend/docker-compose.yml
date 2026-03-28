@@ -14,8 +14,9 @@ services:
       - http
 
   mongo:
-      image: mongo:latest
+      image: mongo:7.0
       restart: always
+      platform: linux/amd64
       command: ["mongod", "--quiet", "--logpath", "/dev/null"]
       ports:
         - "27017:27017"
@@ -81,5 +82,7 @@ services:
       - ASPNETCORE_ENVIRONMENT=Development
       - MongoDB__ConnectionString=mongodb://mongo:27017/
       - MongoDB__DatabaseName=images
+    volumes:
+      - ./FileStorage:/app/FileStorage
     depends_on:
       - mongo

@@ -10,7 +10,7 @@ public class GetQuestionsByTag(ILogger<GetQuestionsByTag> logger) : ForumEndpoin
 
     public override void Configure()
     {
-        Get("api/questions/tag/page{page}");
+        Get("api/questions/tag/page={page}");
         Policies(ForumPolicy.AuthenticatedUser);
     }
 

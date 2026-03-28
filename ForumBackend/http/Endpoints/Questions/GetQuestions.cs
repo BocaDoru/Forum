@@ -11,7 +11,7 @@ public class GetQuestions(ILogger<GetQuestions> logger) : ForumEndpoint(logger)
 
     public override void Configure()
     {
-        Get("api/questions/page{page}");
+        Get("api/questions/page={page}");
         Policies(ForumPolicy.AuthenticatedUser);
     }
 
