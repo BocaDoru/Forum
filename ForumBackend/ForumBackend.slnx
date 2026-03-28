@@ -4,6 +4,9 @@
     <Project Path="database/database.csproj" Id="8f88f7cc-09f9-46ac-ac16-505c42b90361" />
     <Project Path="security/security.csproj" Id="271aab71-9f3d-482e-ba8d-e9360f0eaf55" />
   </Folder>
+  <Folder Name="/servicetest/">
+    <Project Path="servicetest/servicetest.csproj" Id="9bfb17e5-75a7-4db5-90a9-e6fb930a3bab" />
+  </Folder>
   <Project Path="docker-compose.dcproj">
     <Build />
   </Project>
