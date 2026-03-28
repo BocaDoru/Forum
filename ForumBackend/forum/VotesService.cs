@@ -1,11 +1,11 @@
 ﻿using commons.MessageBase;
 using commons.Protos;
+using forumServiceClient;
 using Grpc.Core;
-using votesServiceClient;
 
-namespace votes;
+namespace forum;
 
-public class VotesGrpcService(MessageDispatcher dispatcher) : VotesService.VotesServiceBase
+public class VotesService(MessageDispatcher dispatcher) : votesService.votesServiceBase
 {
     private readonly MessageDispatcher _dispatcher = dispatcher;
 
@@ -14,5 +14,4 @@ public class VotesGrpcService(MessageDispatcher dispatcher) : VotesService.Votes
 
     public override Task<MessageResponse> GetVoteCount(GetVoteCountRequest request, ServerCallContext serverCallContext)
         => _dispatcher.DispatchAsync(request, serverCallContext.CancellationToken);
-
 }

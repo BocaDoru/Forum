@@ -32,6 +32,12 @@ builder.Services.AddGrpcClient<forumService.forumServiceClient>(o =>
     o.Address = new Uri(address!);
 });
 
+builder.Services.AddGrpcClient<votesService.votesServiceClient>(o =>  
+{
+    string? address = builder.Configuration["GrpcServices:ForumService"];
+    o.Address = new Uri(address!);
+});
+
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = ForumAuthentication.SchemeName;

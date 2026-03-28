@@ -2,11 +2,11 @@ syntax = "proto3";
 
 import "Protos/common.proto";
 
-option csharp_namespace = "votesServiceClient";
+option csharp_namespace = "forumServiceClient";
 
-package votesService;
+package forumService;
 
-service VotesService {
+service votesService {
   rpc CastVote (CastVoteRequest) returns (commons.protos.MessageResponse);
   rpc GetVoteCount (GetVoteCountRequest) returns (commons.protos.MessageResponse);
 }
@@ -14,11 +14,11 @@ service VotesService {
 message CastVoteRequest {
   string userId = 1;
   string postId = 2;
-  int32 type = 3;      // 0 = question, 1 = answer
-  int32 voteValue = 4; // 1 = upvote, 0 = downvote
+  bool isQuestion = 3;
+  bool isDownvote = 4;
 }
 
 message GetVoteCountRequest {
   string postId = 1;
-  int32 type = 2;      // 0 = question, 1 = answer
+  bool isQuestion = 2;
 }
