@@ -18,6 +18,9 @@ service forumService
 	rpc GetQuestionsByTag (QuestionsByTagRequest) returns (commons.protos.MessageResponse);
 	rpc CreateTag (CreateTagRequest) returns (commons.protos.MessageResponse);
 	rpc GetTagByName (TagNameRequest) returns (commons.protos.MessageResponse);
+	rpc CreateComment (CreateCommentRequest) returns (commons.protos.MessageResponse);
+	rpc EditComment (EditCommentRequest) returns (commons.protos.MessageResponse);
+	rpc DeleteComment (DeleteCommentRequest) returns (commons.protos.MessageResponse);
 }
 
 message CreateQuestionRequest
@@ -84,3 +87,21 @@ message TagNameRequest
 {
 	string name = 1;
 }
+
+message CreateCommentRequest {
+  string questionId = 1;
+  string authorId = 2;
+  string text = 3;
+  optional string imageId = 4;
+}
+message EditCommentRequest {
+  string commentId = 1;
+  string authorId = 2;
+  string text = 3;
+  optional string imageId = 4;
+}
+message DeleteCommentRequest {
+  string commentId = 1;
+  string authorId = 2;
+}
+
