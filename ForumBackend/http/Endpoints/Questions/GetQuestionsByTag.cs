@@ -1,9 +1,8 @@
 ﻿using commons.Protos;
-using FastEndpoints;
 using forumServiceClient;
 using http.Auth;
 
-namespace http.Endpoints.Users;
+namespace http.Endpoints.Questions;
 
 public class GetQuestionsByTag(ILogger<GetQuestionsByTag> logger) : ForumEndpoint<string>(logger)
 {
@@ -11,7 +10,7 @@ public class GetQuestionsByTag(ILogger<GetQuestionsByTag> logger) : ForumEndpoin
 
     public override void Configure()
     {
-        Get("api/questions/tag/page{page}");
+        Get("api/questions/tag/page={page}");
         Policies(ForumPolicy.AuthenticatedUser);
     }
 

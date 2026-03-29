@@ -23,7 +23,7 @@ public class UserFlowTests : ITestFlow
                 IsModerator = false
             });
 
-            test.Assert(res.Code == 200, "Expected HTTP 200 OK for register.");
+            test.Assert(res.Code == 200, "Expected HTTP 200 OK for register.", res.Json.ToString());
         });
 
         await test.Step("Fail to register duplicate email", async () =>
@@ -36,7 +36,7 @@ public class UserFlowTests : ITestFlow
                 IsModerator = false
             });
 
-            test.Assert(res.Code == 400, "Expected HTTP 400 for duplicate email.");
+            test.Assert(res.Code == 400, "Expected HTTP 400 for duplicate email.", res.Json.ToString());
         });
 
         await test.Step("Fail to login with wrong password", async () =>
@@ -47,7 +47,7 @@ public class UserFlowTests : ITestFlow
                 Password = "WrongPassword1!"
             });
 
-            test.Assert(res.Code == 401, "Expected HTTP 401 for wrong password.");
+            test.Assert(res.Code == 401, "Expected HTTP 401 for wrong password.", res.Json.ToString());
         });
 
         await test.Step("Login user", async () =>
@@ -58,7 +58,7 @@ public class UserFlowTests : ITestFlow
                 Password = testPassword
             });
 
-            test.Assert(res.Code == 200, "Expected HTTP 200 for login user.");
+            test.Assert(res.Code == 200, "Expected HTTP 200 for login user.", res.Json.ToString());
 
             string token = res.Json.GetProperty("JwtToken").GetString()!;
             test.SetBearer(token);

@@ -18,6 +18,9 @@ public class ForumService(MessageDispatcher dispatcher) : forumService.forumServ
     public override Task<MessageResponse> DeleteQuestion(DeleteQuestionRequest request, ServerCallContext serverCallContext)
        => _dispatcher.DispatchAsync(request, serverCallContext.CancellationToken);
 
+    public override Task<MessageResponse> SolveQuestion(SolveRequest request, ServerCallContext serverCallContext)
+       => _dispatcher.DispatchAsync(request, serverCallContext.CancellationToken);
+
     public override Task<MessageResponse> GetQuestionById(QuestionIdRequest request, ServerCallContext serverCallContext)
        => _dispatcher.DispatchAsync(request, serverCallContext.CancellationToken);
 
