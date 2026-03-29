@@ -27,21 +27,13 @@ builder.Services.AddGrpcClient<usersService.usersServiceClient>(o =>
     o.Address = new Uri(address!);
 });
 
-builder.Services.AddGrpcClient<forumService.forumServiceClient>(o =>
-{
-    string? address = builder.Configuration["GrpcServices:ForumService"];
-    o.Address = new Uri(address!);
-});
+var forumUri = new Uri(builder.Configuration["GrpcServices:ForumService"]!);
+builder.Services.AddGrpcClient<forumService.forumServiceClient>(o => o.Address = forumUri);
+builder.Services.AddGrpcClient<votesService.votesServiceClient>(o => o.Address = forumUri);
 
 builder.Services.AddGrpcClient<imagesService.imagesServiceClient>(o =>
 {
     string? address = builder.Configuration["GrpcServices:ImagesService"];
-    o.Address = new Uri(address!);
-});
-
-builder.Services.AddGrpcClient<votesService.votesServiceClient>(o =>  
-{
-    string? address = builder.Configuration["GrpcServices:ForumService"];
     o.Address = new Uri(address!);
 });
 

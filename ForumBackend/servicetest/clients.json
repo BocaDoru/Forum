@@ -6,5 +6,9 @@
   "forum": {
     "Url": "http://localhost:5002",
     "ClientClass": "forumServiceClient"
+  },
+  "votes": {
+    "Url": "http://localhost:5002",
+    "ClientClass": "votesServiceClient"
   }
 }
