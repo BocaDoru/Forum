@@ -1,9 +1,8 @@
 ﻿using commons.Protos;
-using FastEndpoints;
 using forumServiceClient;
 using http.Auth;
 
-namespace http.Endpoints.Users;
+namespace http.Endpoints.Questions;
 
 public class GetQuestionsByTitle(ILogger<GetQuestionsByTitle> logger) : ForumEndpoint<string>(logger)
 {
@@ -11,7 +10,7 @@ public class GetQuestionsByTitle(ILogger<GetQuestionsByTitle> logger) : ForumEnd
 
     public override void Configure()
     {
-        Get("api/questions/title/page{page}");
+        Get("api/questions/title/page={page}");
         Policies(ForumPolicy.AuthenticatedUser);
     }
 
