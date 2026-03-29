@@ -2,9 +2,21 @@ volumes:
   mongo_data:
 
 services:
+  servicetest:
+    image: servicetest
+    build:
+      context: .              
+      dockerfile: servicetest/Dockerfile
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - GatewayUrl=http://http:8080 
+    depends_on:
+      - http
+
   mongo:
-      image: mongo:latest
+      image: mongo:7.0
       restart: always
+      platform: linux/amd64
       command: ["mongod", "--quiet", "--logpath", "/dev/null"]
       ports:
         - "27017:27017"
@@ -23,9 +35,11 @@ services:
       - SecretKey=a_very_secret_key_that_must_be_long_and_complex
       - GrpcServices__UsersService=http://users:8080
       - GrpcServices__ForumService=http://forum:8080
+      - GrpcServices__ImagesService=http://images:8080
     depends_on:
       - users
-      - forum 
+      - forum
+      - images
 
   users:
     image: users
@@ -56,3 +70,19 @@ services:
     depends_on:
       - mongo
       - users
+
+  images:
+    image: images
+    build:
+      context: .              
+      dockerfile: images/Dockerfile
+    ports:
+      - "5003:8080"           
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - MongoDB__ConnectionString=mongodb://mongo:27017/
+      - MongoDB__DatabaseName=images
+    volumes:
+      - ./FileStorage:/app/FileStorage
+    depends_on:
+      - mongo

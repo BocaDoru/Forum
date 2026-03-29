@@ -1,9 +1,8 @@
 ﻿using commons.Protos;
-using FastEndpoints;
 using forumServiceClient;
 using http.Auth;
 
-namespace http.Endpoints.Users;
+namespace http.Endpoints.Questions;
 
 public class GetQuestionsByAuthor(ILogger<GetQuestionsByAuthor> logger) : ForumEndpoint<string>(logger)
 {
@@ -11,7 +10,7 @@ public class GetQuestionsByAuthor(ILogger<GetQuestionsByAuthor> logger) : ForumE
 
     public override void Configure()
     {
-        Get("api/questions/author/page{page}");
+        Get("api/questions/author/page={page}");
         Policies(ForumPolicy.AuthenticatedUser);
     }
 
