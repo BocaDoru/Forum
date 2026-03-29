@@ -38,6 +38,16 @@ public partial class DeleteQuestionRequest : IRequestBase
     }
 }
 
+public partial class SolveRequest : IRequestBase
+{
+    public string? Validate()
+    {
+        if (string.IsNullOrEmpty(QuestionId) || string.IsNullOrEmpty(AuthorId))
+            return "Question metadata are missing.";
+        return null;
+    }
+}
+
 public partial class QuestionIdRequest : IRequestBase
 {
     public string? Validate() => string.IsNullOrEmpty(QuestionId) ? "Question ID is missing from request." : null;

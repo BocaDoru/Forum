@@ -5,6 +5,7 @@ using http.Auth;
 using FastEndpoints;
 using usersServiceClient;
 using forumServiceClient;
+using imagesServiceClient;
 
 AppContext.SetSwitch("System.Net.Http.SocketsHttpHandler.Http2UnencryptedSupport", true);
 
@@ -29,6 +30,12 @@ builder.Services.AddGrpcClient<usersService.usersServiceClient>(o =>
 builder.Services.AddGrpcClient<forumService.forumServiceClient>(o =>
 {
     string? address = builder.Configuration["GrpcServices:ForumService"];
+    o.Address = new Uri(address!);
+});
+
+builder.Services.AddGrpcClient<imagesService.imagesServiceClient>(o =>
+{
+    string? address = builder.Configuration["GrpcServices:ImagesService"];
     o.Address = new Uri(address!);
 });
 
