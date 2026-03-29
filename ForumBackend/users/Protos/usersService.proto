@@ -9,13 +9,21 @@ package usersService;
 service usersService
 {
 	rpc GetUserById (UserIdRequest) returns (commons.protos.MessageResponse);
+	rpc GetUserByEmail (UserEmailRequest) returns (commons.protos.MessageResponse);
 	rpc RegisterUser (RegisterRequest) returns (commons.protos.MessageResponse);
 	rpc AuthUser (AuthRequest) returns (commons.protos.MessageResponse);
+	rpc BanUser (BanRequest) returns (commons.protos.MessageResponse);
+	rpc UnbanUser (UnbanRequest) returns (commons.protos.MessageResponse);
 }
 
 message UserIdRequest
 {
     string id = 1;
+}
+
+message UserEmailRequest
+{
+    string email = 1;
 }
 
 message RegisterRequest
@@ -30,4 +38,17 @@ message AuthRequest
 {
     string email = 1;
 	string password = 2;
+}
+
+message BanRequest
+{
+	string moderatorId = 1;
+	string userId = 2;
+	optional string reason = 3;
+}
+
+message UnbanRequest
+{
+	string moderatorId = 1;
+	string userId = 2;
 }

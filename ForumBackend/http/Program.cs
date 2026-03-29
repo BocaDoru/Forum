@@ -49,7 +49,8 @@ builder.Services.AddAuthentication(options =>
 );
 
 builder.Services.AddAuthorizationBuilder()
-    .AddPolicy(ForumPolicy.AuthenticatedUser, ForumPolicy.AuthenticatedUserPolicy);
+    .AddPolicy(ForumPolicy.AuthenticatedUser, ForumPolicy.AuthenticatedUserPolicy)
+    .AddPolicy(ForumPolicy.Moderator, ForumPolicy.ModeratorPolicy);
 
 builder.Services.AddFastEndpoints();
 
