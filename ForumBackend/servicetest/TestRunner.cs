@@ -63,13 +63,20 @@ public class TestRunner(string apiBaseUrl)
             req.Headers.Authorization = new AuthenticationHeaderValue("Bearer", _bearer);
         }
 
-        payload ??= new { };
+        if (payload is HttpContent httpContent)
+        {
+            req.Content = httpContent;
+        }
+        else
+        {
+            payload ??= new { };
 
-        using MemoryStream reqStream = new();
-        await JsonSerializer.SerializeAsync(reqStream, payload, s_jsonOpts);
-        reqStream.Position = 0;
-        using StreamReader reader = new(reqStream);
-        req.Content = new StringContent(await reader.ReadToEndAsync(), Encoding.UTF8, "application/json");
+            using MemoryStream reqStream = new();
+            await JsonSerializer.SerializeAsync(reqStream, payload, s_jsonOpts);
+            reqStream.Position = 0;
+            using StreamReader reader = new(reqStream);
+            req.Content = new StringContent(await reader.ReadToEndAsync(), Encoding.UTF8, "application/json");
+        }
 
         using var response = await s_http.SendAsync(req);
         using var responseContent = await response.Content.ReadAsStreamAsync();
@@ -95,9 +102,22 @@ public class TestRunner(string apiBaseUrl)
         return httpResponse;
     }
 
-    public void Assert(bool condition, string errorMessage)
+    public void Assert(bool condition, string errorMessage, string? actualResponse = null)
     {
-        if (!condition) 
+        if (!condition)
+        {
+            if (!string.IsNullOrEmpty(actualResponse))
+            {
+                Console.ForegroundColor = ConsoleColor.Yellow;
+                Console.WriteLine($"Actual Response: {actualResponse}");
+                Console.ResetColor();
+            }
+
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine($"FATAL: {errorMessage}");
+            Console.ResetColor();
+
             throw new Exception(errorMessage);
+        }
     }
 }
