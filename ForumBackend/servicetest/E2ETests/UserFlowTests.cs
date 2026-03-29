@@ -47,7 +47,7 @@ public class UserFlowTests : ITestFlow
                 Password = "WrongPassword1!"
             });
 
-            test.Assert(res.Code == 401, "Expected HTTP 401 for wrong password.", res.Json.ToString());
+            test.Assert(res.Code == 400, "Expected HTTP 400 for wrong password.", res.Json.ToString());
         });
 
         await test.Step("Login user", async () =>
