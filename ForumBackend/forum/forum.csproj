@@ -5,7 +5,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
-    <UserSecretsId>23d87dc7-6b13-46bc-a0dc-6c26ac04c08d</UserSecretsId>
+    <UserSecretsId>7a317891-8b0d-490f-9401-6dbb3deefcce</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
@@ -13,6 +13,7 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.23.0" />
     <ProjectReference Include="..\commons\commons.csproj" />
     <ProjectReference Include="..\database\database.csproj" />
   </ItemGroup>
