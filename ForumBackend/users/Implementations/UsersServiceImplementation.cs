@@ -13,11 +13,14 @@ namespace users.Implementations;
 
 public interface IUsersService
 {
-    public Task<User?> GetUserById(string id);
+    Task<User?> GetUserById(string id);
 
-    public Task<UserWithJwt> Auth(string email, string password);
+    Task<UserWithJwt> Auth(string email, string password);
 
-    public Task<UserWithJwt> Register(string username, string email, string password, bool isModerator);
+    Task<UserWithJwt> Register(string username, string email, string password, bool isModerator);
+
+    Task BanUser(string moderatorId, string userId, string? reason);
+    Task UnbanUser(string moderatorId, string userId);
 }
 public class UsersServiceImplementation(
     ILogger<UsersServiceImplementation> logger,
@@ -28,17 +31,17 @@ public class UsersServiceImplementation(
     private readonly ILogger<UsersServiceImplementation> _logger = logger;
     private readonly IConfiguration _configuration = configuration;
 
-    private readonly AsyncLazy<IDatabaseCollection<User>> _userCollection = new(() => GetUserCollection(database));
+    private readonly AsyncLazy<IDatabaseCollection<User>> _users = new(() => GetUserCollection(database));
 
     public async Task<User?> GetUserById(string id)
     {
-        var users = await _userCollection;
+        var users = await _users;
         return await users.GetOneByIdAsync(id);
     }
 
     public async Task<User?> GetUserByEmail(string email)
     {
-        var users = await _userCollection;
+        var users = await _users;
         return await users.GetOneAsync(u => u.Email == email);
     }
 
@@ -77,7 +80,7 @@ public class UsersServiceImplementation(
             throw new BadRequestException("Invalid email or password.");
         }
 
-        var users = await _userCollection;
+        var users = await _users;
 
         if (await GetUserByEmail(email) is not null)
         {
@@ -105,6 +108,29 @@ public class UsersServiceImplementation(
         return new UserWithJwt(newUser, jwtToken);
     }
 
+    public async Task BanUser(string moderatorId, string userId, string? reason)
+    {
+        var moderator = await GetUserById(moderatorId);
+        if (moderator is null || !moderator.IsModerator)
+        {
+            _logger.LogError("Invalid moderator account for id:{id}", moderatorId);
+            throw new ForbiddenException("Only moderators have permisssion to ban other users.");
+        }
+
+        var user = await GetUserById(userId);
+        if (user is null)
+        {
+            _logger.LogError("User with id:{id} can not be found", userId);
+            throw new NotFoundException("User can not be found.");
+        }
+
+        user.IsBanned = true;
+        var users = await _users;
+    }
+    public async Task UnbanUser(string moderatorId, string userId)
+    {
+
+    }
 
     private bool IsValidEmail(string email)
     {
