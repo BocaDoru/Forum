@@ -7,7 +7,7 @@ namespace http.Endpoints.Comments;
 public record CreateCommentApiRequest(string QuestionId, string Text, string? ImageId);
 public class CreateComment(ILogger<CreateComment> logger) : ForumEndpoint<CreateCommentApiRequest>(logger)
 {
-    public forumService.forumServiceClient Client { get; set; } = default!;
+    public commentsService.commentsServiceClient Client { get; set; } = default!;
 
     public override void Configure()
     {
@@ -17,6 +17,13 @@ public class CreateComment(ILogger<CreateComment> logger) : ForumEndpoint<Create
 
     public override async Task HandleAsync(CreateCommentApiRequest req, CancellationToken cancellationToken)
     {
+        if(string.IsNullOrEmpty(req.Text))
+        {
+            await HandleErrorsAsync(400, "Comments need to have text.", cancellationToken);
+            return;
+        }
+
+
         var grpcReq = new CreateCommentRequest
         {
             AuthorId = GetUserId(),
@@ -28,6 +35,7 @@ public class CreateComment(ILogger<CreateComment> logger) : ForumEndpoint<Create
         {
             grpcReq.ImageId = req.ImageId;
         }
+
         var response = await Client.CreateCommentAsync(grpcReq, null, null, cancellationToken);
         await SendAsync(response, cancellationToken: cancellationToken);
     }

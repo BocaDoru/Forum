@@ -8,7 +8,7 @@ public record EditCommentApiRequest(string CommentId, string Text, string? Image
 
 public class EditComment(ILogger<EditComment> logger) : ForumEndpoint<EditCommentApiRequest>(logger)
 {
-    public forumService.forumServiceClient Client { get; set; } = default!;
+    public commentsService.commentsServiceClient Client { get; set; } = default!;
 
     public override void Configure()
     {

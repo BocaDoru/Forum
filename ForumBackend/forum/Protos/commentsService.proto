@@ -1,0 +1,39 @@
+syntax = "proto3";
+
+import "Protos/common.proto";
+
+option csharp_namespace = "forumServiceClient";
+
+package forumService;
+
+service commentsService
+{
+	rpc CreateComment (CreateCommentRequest) returns (commons.protos.MessageResponse);
+	rpc EditComment (EditCommentRequest) returns (commons.protos.MessageResponse);
+	rpc DeleteComment (DeleteCommentRequest) returns (commons.protos.MessageResponse);
+	rpc GetCommentsForQuestion (GetCommentsRequest) returns (commons.protos.MessageResponse);
+}
+
+message CreateCommentRequest {
+  string questionId = 1;
+  string authorId = 2;
+  string text = 3;
+  optional string imageId = 4;
+}
+
+message EditCommentRequest {
+  string commentId = 1;
+  string authorId = 2;
+  string text = 3;
+  optional string imageId = 4;
+}
+
+message DeleteCommentRequest {
+  string commentId = 1;
+  string authorId = 2;
+}
+
+message GetCommentsRequest {
+  string questionId = 1;
+}
+

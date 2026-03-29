@@ -8,7 +8,7 @@ public record DeleteCommentApiRequest(string CommentId);
 
 public class DeleteComment(ILogger<DeleteComment> logger) : ForumEndpoint<DeleteCommentApiRequest>(logger)
 {
-    public forumService.forumServiceClient Client { get; set; } = default!;
+    public commentsService.commentsServiceClient Client { get; set; } = default!;
 
     public override void Configure()
     {
@@ -18,6 +18,7 @@ public class DeleteComment(ILogger<DeleteComment> logger) : ForumEndpoint<Delete
 
     public override async Task HandleAsync(DeleteCommentApiRequest req, CancellationToken cancellationToken)
     {
+
         var grpcReq = new DeleteCommentRequest
         {
             AuthorId = GetUserId(),

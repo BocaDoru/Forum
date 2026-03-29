@@ -1,4 +1,4 @@
-﻿using commons;
+using commons;
 using commons.MessageBase;
 using database;
 using forum.Models;
@@ -27,8 +27,37 @@ public class CommentsServiceImplementation(
 
     public async Task<Comment> CreateCommentAsync(string questionId, string authorId, string text, string? imageId)
     {
+  
+        var userRes = await _userService.GetUserByIdAsync(new UserIdRequest { Id = authorId });
+        if (userRes is null || !userRes.Success)
+        {
+            _logger.LogWarning("CreateComment failed: Author {authorId} not found.", authorId);
+            throw new NotFoundException("User not found.");
+        }
 
-        var collections = await _comments;
+        var comments = await _comments;
+        var questionCollection = database.GetCollection<Question>();
+        var questionExists = await questionCollection.GetOneByIdAsync(questionId);
+
+        if (questionExists is null)
+        {
+            _logger.LogWarning("CreateComment failed: Question {questionId} not found.", questionId);
+            throw new NotFoundException("Question not found.");
+        }
+
+        if (questionExists.Status == Status.SOLVED)
+        {
+            _logger.LogWarning("CreateComment failed: Question {questionId} is already solved.", questionId);
+            throw new BadRequestException("Cannot add comments to a question that is marked as SOLVED.");
+        }
+
+        if (questionExists.Status == Status.RECEIVED)
+        {
+            questionExists.Status = Status.IN_PROGRESS;
+            await questionCollection.ReplaceAsync(questionExists);
+            _logger.LogInformation("Question {questionId} status updated to IN_PROGRESS upon receiving first comment.", questionId);
+        }
+
         var comment = new Comment
         {
             QuestionId = questionId,
@@ -37,28 +66,30 @@ public class CommentsServiceImplementation(
             ImageId = imageId,
             CreatedAt = DateTime.UtcNow
         };
-        comment.Id = await collections.InsertAsync(comment);
-        _logger.LogInformation("New comment added {id}", comment.Id);
+
+        comment.Id = await comments.InsertAsync(comment);
+        _logger.LogInformation("New comment added {id} to question {questionId}", comment.Id, questionId);
+
         return comment;
     }
 
     public async Task<Comment> EditCommentAsync(string commentId, string authorId, string text, string? imageId)
     {
         var collections = await _comments;
-        var comment = await collections.GetOneByIdAsync(commentId);
-        if (comment is null) throw new NotFoundException("Comment not found.");
+        var comments = await collections.GetOneByIdAsync(commentId);
+        if (comments is null) throw new NotFoundException("Comment not found.");
 
-        if (comment.AuthorId != authorId)
+        if (comments.AuthorId != authorId)
         {
             var res = await _userService.GetUserByIdAsync(new UserIdRequest { Id = authorId });
             if (res is null || !res.Success || !res.Payload.GetBool("IsModerator"))
                 throw new ForbiddenException("Only the author or a moderator can edit this comment.");
         }
 
-        comment.Text = text;
-        comment.ImageId = imageId;
-        await collections.ReplaceAsync(comment);
-        return comment;
+        comments.Text = text;
+        comments.ImageId = imageId;
+        await collections.ReplaceAsync(comments);
+        return comments;
     }
 
     public async Task<bool> DeleteCommentAsync(string commentId, string authorId)

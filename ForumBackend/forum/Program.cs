@@ -41,5 +41,6 @@ builder.Services.AddSingleton<ICommentsService, CommentsServiceImplementation>()
 var app = builder.Build();
 
 app.MapGrpcService<ForumService>();
+app.MapGrpcService<CommentsService>();
 
 app.Run();
