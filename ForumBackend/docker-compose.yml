@@ -52,6 +52,10 @@ services:
       - ASPNETCORE_ENVIRONMENT=Development
       - MongoDB__ConnectionString=mongodb://mongo:27017/
       - MongoDB__DatabaseName=users
+      - BrevoSettings__ApiKey=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
+      - BrevoSettings__ApiUrl=https://api.brevo.com/v3/smtp/email
+      - BrevoSettings__EmailFrom=bocaioandoru12@gmail.com
+      - BrevoSettings__SenderName=Forum
     depends_on:
       - mongo
   
