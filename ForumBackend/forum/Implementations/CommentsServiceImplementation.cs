@@ -18,11 +18,13 @@ public interface ICommentsService
 public class CommentsServiceImplementation(
     ILogger<CommentsServiceImplementation> logger,
     IDatabase database,
-    usersService.usersServiceClient usersService
+    usersService.usersServiceClient usersService,
+    IQuestionsService questionService
 ) : ICommentsService
 {
     private readonly ILogger<CommentsServiceImplementation> _logger = logger;
     private readonly usersService.usersServiceClient _userService = usersService;
+    private readonly IQuestionsService _questionsService = questionService;
     private readonly AsyncLazy<IDatabaseCollection<Comment>> _comments = new(() => GetCommentCollection(database));
 
     public async Task<Comment> CreateCommentAsync(string questionId, string authorId, string text, string? imageId)
@@ -36,8 +38,7 @@ public class CommentsServiceImplementation(
         }
 
         var comments = await _comments;
-        var questionCollection = database.GetCollection<Question>();
-        var questionExists = await questionCollection.GetOneByIdAsync(questionId);
+        var questionExists = await _questionsService.GetQuestionByIdAsync(questionId);
 
         if (questionExists is null)
         {
@@ -53,8 +54,15 @@ public class CommentsServiceImplementation(
 
         if (questionExists.Status == Status.RECEIVED)
         {
-            questionExists.Status = Status.IN_PROGRESS;
-            await questionCollection.ReplaceAsync(questionExists);
+            await _questionsService.EditQuestionAsync(
+                questionId,
+                questionExists.AuthorId,
+                questionExists.Title,
+                questionExists.Text,
+                questionExists.ImageId,
+                questionExists.TagIds,
+                Status.IN_PROGRESS
+            );
             _logger.LogInformation("Question {questionId} status updated to IN_PROGRESS upon receiving first comment.", questionId);
         }
 

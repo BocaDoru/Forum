@@ -1,4 +1,4 @@
-﻿using commons.Protos;
+using commons.Protos;
 using forumServiceClient;
 using http.Auth;
 
@@ -18,9 +18,28 @@ public class EditComment(ILogger<EditComment> logger) : ForumEndpoint<EditCommen
 
     public override async Task HandleAsync(EditCommentApiRequest req, CancellationToken cancellationToken)
     {
+        var userId = GetUserId();
+        if (string.IsNullOrWhiteSpace(userId))
+        {
+            await HandleErrorsAsync(401, "User is not fully authenticated.", cancellationToken);
+            return;
+        }
+
+        if (string.IsNullOrWhiteSpace(req.CommentId))
+        {
+            await HandleErrorsAsync(400, "Comment ID cannot be empty.", cancellationToken);
+            return;
+        }
+
+        if (string.IsNullOrWhiteSpace(req.Text))
+        {
+            await HandleErrorsAsync(400, "Comments need to have text.", cancellationToken);
+            return;
+        }
+
         var grpcReq = new EditCommentRequest
         {
-            AuthorId = GetUserId(),
+            AuthorId = userId,
             CommentId = req.CommentId,
             Text = req.Text
         };
