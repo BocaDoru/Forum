@@ -3,7 +3,7 @@ using FastEndpoints;
 using forumServiceClient;
 using http.Auth;
 
-namespace http.Endpoints.Users;
+namespace http.Endpoints.UseQuestionsrs;
 
 public record EditQuestionApiRequest(string Title, string Text, string? ImageId, IEnumerable<string> TagIds, string Status);
 public class EditQuestion(ILogger<EditQuestion> logger) : ForumEndpoint<EditQuestionApiRequest>(logger)

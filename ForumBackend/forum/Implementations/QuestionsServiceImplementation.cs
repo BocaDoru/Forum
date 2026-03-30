@@ -12,6 +12,7 @@ public interface IQuestionsService
     Task<Question> CreateQuestionAsync(string authorId, string title, string text, string? imageId, List<string> tags);
     Task<Question> EditQuestionAsync(string questionId, string userId, string title, string text, string? imageId, List<string> tags, Status status);
     Task<bool> DeleteQuestionAsync(string questionId, string userId);
+    Task<Question> UpdateStatusAsync(string questionId, Status status, string? authorId = null);
     Task<Question?> GetQuestionByIdAsync(string id);
     Task<List<Question>?> GetQuestionsByAuthorAsync(string authorId, int skip, int limit);
     Task<List<Question>?> FindQuestionsByTitleAsync(string title, int skip, int limit);
@@ -51,7 +52,7 @@ public class QuestionsServiceImplementation(
             Text = text,
             TagIds = tags,
             ImageId = imageId,
-            CreatedAt = DateTime.Now,
+            CreatedAt = DateTime.UtcNow,
             Status = Status.RECEIVED
         };
 
@@ -149,6 +150,31 @@ public class QuestionsServiceImplementation(
         return editedQuestion;
     }
     
+    public async Task<Question> UpdateStatusAsync(string questionId, Status status, string? authorId = null)
+    {
+        var question = await GetQuestionByIdAsync(questionId);
+        if (question is null)
+        {
+            _logger.LogInformation("Question:{id} could not be found.", questionId);
+            throw new NotFoundException("Question not found.");
+        }
+
+        if (status == Status.SOLVED && (authorId is null || question.AuthorId != authorId))
+        {
+            _logger.LogInformation("Question status can be set to SOLVED just by the author");
+            throw new ForbiddenException("Status can be changed to SOLVED just by authors.");
+        }
+
+        Status oldStatus = question.Status;
+        question.Status = status;
+
+        var questions = await _questions;
+        await questions.ReplaceAsync(question);
+
+        _logger.LogInformation("Updated status:{oldStatus} to {newStatus}", oldStatus, status);
+        return question;
+    }
+
     public async Task<Question?> GetQuestionByIdAsync(string id)
     {
         var questions = await _questions;

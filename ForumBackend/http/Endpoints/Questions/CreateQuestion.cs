@@ -1,17 +1,22 @@
 ﻿using commons.Protos;
 using forumServiceClient;
+using Google.Protobuf;
 using http.Auth;
+using imagesServiceClient;
 
-namespace http.Endpoints.Users;
+namespace http.Endpoints.Questions;
 
-public record CreateQuestionApiRequest(string Title, string Text, string? ImageId, IEnumerable<string> TagIds);
+public record CreateQuestionApiRequest(string Title, string Text, IFormFile? Image, IEnumerable<string> TagIds);
 public class CreateQuestion(ILogger<CreateQuestion> logger) : ForumEndpoint<CreateQuestionApiRequest>(logger)
 {
-    public forumService.forumServiceClient Client { get; set; } = default!;
+    public forumService.forumServiceClient ForumClient { get; set; } = default!;
+    public imagesService.imagesServiceClient ImagesClient { get; set; } = default!;
 
     public override void Configure()
     {
         Post("api/questions/create");
+        AllowFileUploads();
+
         Policies(ForumPolicy.AuthenticatedUser);
     }
 
@@ -23,19 +28,43 @@ public class CreateQuestion(ILogger<CreateQuestion> logger) : ForumEndpoint<Crea
             return;
         }
 
-        var grpcReq = new CreateQuestionRequest
+        var createReq = new CreateQuestionRequest
         {
             AuthorId = GetUserId(),
             Title = req.Title,
             Text = req.Text
         };
 
-        if (req.ImageId is not null)
-            grpcReq.ImageId = req.ImageId;
+        createReq.TagIds.AddRange(req.TagIds);
 
-        grpcReq.TagIds.AddRange(req.TagIds);
+        string? imageId;
+        if (req.Image is not null && req.Image.Length != 0)
+        {
+            using MemoryStream ms = new();
+            await req.Image.CopyToAsync(ms, cancellationToken);
 
-        MessageResponse response = await Client.CreateQuestionAsync(grpcReq, null, null, cancellationToken);
+            byte[] bytes = ms.ToArray();
+
+            var uploadReq = new UploadRequest
+            { 
+                FileName = req.Image.FileName,
+                Data = ByteString.CopyFrom(bytes)
+            };
+            
+            MessageResponse res = await ImagesClient.UploadAsync(uploadReq, null, null, cancellationToken);
+            if (!res.Success || string.IsNullOrEmpty(res.Body))
+            {
+                logger.LogError("Upload image failed with Code:{code}, Errors:{err}", res.Code, res.Errors);
+
+                await HandleErrorsAsync(res.Code, res.Errors, cancellationToken);
+                return;
+            }
+
+            imageId = res.Payload.GetString("Id");
+            createReq.ImageId = imageId;
+        }
+
+        MessageResponse response = await ForumClient.CreateQuestionAsync(createReq, null, null, cancellationToken);
         await SendAsync(response, cancellationToken: cancellationToken);
     }
 }
