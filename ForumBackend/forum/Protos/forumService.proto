@@ -11,6 +11,7 @@ service forumService
 	rpc CreateQuestion (CreateQuestionRequest) returns (commons.protos.MessageResponse);
 	rpc EditQuestion (EditQuestionRequest) returns (commons.protos.MessageResponse);
 	rpc DeleteQuestion (DeleteQuestionRequest) returns (commons.protos.MessageResponse);
+	rpc SolveQuestion (SolveRequest) returns (commons.protos.MessageResponse);
 	rpc GetQuestionById (QuestionIdRequest) returns (commons.protos.MessageResponse);
 	rpc GetQuestions (QuestionsRequest) returns (commons.protos.MessageResponse);
 	rpc GetQuestionsByAuthor (QuestionsByAuthorRequest) returns (commons.protos.MessageResponse);
@@ -44,6 +45,12 @@ message DeleteQuestionRequest
 {
 	string questionId = 1;
 	string userId = 2;
+}
+
+message SolveRequest
+{
+	string questionId = 1;
+	string authorId = 2;
 }
 
 message QuestionIdRequest

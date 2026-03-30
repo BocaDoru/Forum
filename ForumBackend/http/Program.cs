@@ -5,6 +5,7 @@ using http.Auth;
 using FastEndpoints;
 using usersServiceClient;
 using forumServiceClient;
+using imagesServiceClient;
 
 AppContext.SetSwitch("System.Net.Http.SocketsHttpHandler.Http2UnencryptedSupport", true);
 
@@ -38,6 +39,12 @@ builder.Services.AddGrpcClient<commentsService.commentsServiceClient>(o =>
     o.Address = new Uri(address!);
 });
 
+builder.Services.AddGrpcClient<imagesService.imagesServiceClient>(o =>
+{
+    string? address = builder.Configuration["GrpcServices:ImagesService"];
+    o.Address = new Uri(address!);
+});
+
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = ForumAuthentication.SchemeName;
@@ -48,7 +55,8 @@ builder.Services.AddAuthentication(options =>
 );
 
 builder.Services.AddAuthorizationBuilder()
-    .AddPolicy(ForumPolicy.AuthenticatedUser, ForumPolicy.AuthenticatedUserPolicy);
+    .AddPolicy(ForumPolicy.AuthenticatedUser, ForumPolicy.AuthenticatedUserPolicy)
+    .AddPolicy(ForumPolicy.Moderator, ForumPolicy.ModeratorPolicy);
 
 builder.Services.AddFastEndpoints();
 
