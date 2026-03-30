@@ -19,11 +19,6 @@ public class EditComment(ILogger<EditComment> logger) : ForumEndpoint<EditCommen
     public override async Task HandleAsync(EditCommentApiRequest req, CancellationToken cancellationToken)
     {
         var userId = GetUserId();
-        if (string.IsNullOrWhiteSpace(userId))
-        {
-            await HandleErrorsAsync(401, "User is not fully authenticated.", cancellationToken);
-            return;
-        }
 
         if (string.IsNullOrWhiteSpace(req.CommentId))
         {

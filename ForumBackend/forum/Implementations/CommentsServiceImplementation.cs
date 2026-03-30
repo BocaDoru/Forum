@@ -54,15 +54,7 @@ public class CommentsServiceImplementation(
 
         if (questionExists.Status == Status.RECEIVED)
         {
-            await _questionsService.EditQuestionAsync(
-                questionId,
-                questionExists.AuthorId,
-                questionExists.Title,
-                questionExists.Text,
-                questionExists.ImageId,
-                questionExists.TagIds,
-                Status.IN_PROGRESS
-            );
+            await _questionsService.UpdateStatusAsync(questionId, Status.IN_PROGRESS, questionExists.AuthorId);
             _logger.LogInformation("Question {questionId} status updated to IN_PROGRESS upon receiving first comment.", questionId);
         }
 

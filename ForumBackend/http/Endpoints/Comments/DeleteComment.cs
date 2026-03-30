@@ -20,11 +20,6 @@ public class DeleteComment(ILogger<DeleteComment> logger) : ForumEndpoint(logger
         string? commentId = Route<string>("commentId");
 
         var userId = GetUserId();
-        if (string.IsNullOrWhiteSpace(userId))
-        {
-            await HandleErrorsAsync(401, "User is not fully authenticated.", cancellationToken);
-            return;
-        }
 
         if (string.IsNullOrWhiteSpace(commentId))
         {
