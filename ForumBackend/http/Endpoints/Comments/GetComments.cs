@@ -1,4 +1,4 @@
-﻿using commons.Protos;
+using commons.Protos;
 using FastEndpoints;
 using forumServiceClient;
 
@@ -20,7 +20,8 @@ public class GetComments(ILogger<GetComments> logger) : ForumEndpoint(logger)
 
         if (string.IsNullOrEmpty(questionId))
         {
-            ThrowError("QuestionId is required.");
+            await HandleErrorsAsync(400, "QuestionId is required.", cancellationToken);
+            return;
         }
 
         var grpcReq = new GetCommentsRequest

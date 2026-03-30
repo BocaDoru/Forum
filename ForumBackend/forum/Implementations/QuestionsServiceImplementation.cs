@@ -1,4 +1,4 @@
-﻿using commons;
+using commons;
 using commons.MessageBase;
 using database;
 using forum.Models;
