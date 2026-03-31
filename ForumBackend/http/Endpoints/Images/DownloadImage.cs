@@ -3,7 +3,7 @@ using FastEndpoints;
 using http.Auth;
 using imagesServiceClient;
 
-namespace http.Endpoints;
+namespace http.Endpoints.Images;
 
 public class DownloadImage(ILogger<DownloadImage> logger) : ForumEndpoint(logger)
 {
