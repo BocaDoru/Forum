@@ -41,4 +41,5 @@ public class ForumService(MessageDispatcher dispatcher) : forumService.forumServ
 
     public override Task<MessageResponse> GetTagByName(TagNameRequest request, ServerCallContext serverCallContext)
        => _dispatcher.DispatchAsync(request, serverCallContext.CancellationToken);
+
 }
