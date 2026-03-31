@@ -11,6 +11,8 @@ service usersService
 	rpc GetUserById (UserIdRequest) returns (commons.protos.MessageResponse);
 	rpc RegisterUser (RegisterRequest) returns (commons.protos.MessageResponse);
 	rpc AuthUser (AuthRequest) returns (commons.protos.MessageResponse);
+	rpc UpdateUserScore (UpdateUserScoreRequest) returns (commons.protos.MessageResponse);
+	rpc GetUserScore (UserIdRequest) returns (commons.protos.MessageResponse);
 }
 
 message UserIdRequest
@@ -30,4 +32,9 @@ message AuthRequest
 {
     string email = 1;
 	string password = 2;
+}
+
+message UpdateUserScoreRequest {
+    string userId = 1;
+    float delta = 2;
 }

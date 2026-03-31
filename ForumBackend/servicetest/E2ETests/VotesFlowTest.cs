@@ -176,5 +176,55 @@ public class VotesFlowTest : ITestFlow
             });
             test.Assert(res.Code == 400, "Expected HTTP 400 for self-vote.", res.Json.ToString());
         });
+
+        await test.Step("Get question vote count (Success)", async () =>
+        {
+            var res = await test.GetAsync($"api/questions/{questionId}/votecount");
+            test.Assert(res.Code == 200, "Expected HTTP 200 for getting question vote count.", res.Json.ToString());
+        });
+
+        // Switch back to user2 to check scores
+        await test.Step("Login user2 again", async () =>
+        {
+            var res = await test.PostAsync("api/users/auth", new
+            {
+                Email = user2Email,
+                Password = "Test123!"
+            });
+            test.Assert(res.Code == 200, "Expected HTTP 200 for login user2.", res.Json.ToString());
+            test.SetBearer(res.Json.GetProperty("JwtToken").GetString()!);
+        });
+
+        string user1Id = string.Empty;
+        string user2Id = string.Empty;
+
+        await test.Step("Get user1 score (author - should have lost points from downvote)", async () =>
+        {
+            // login as user1 first to get their id
+            var authRes = await test.PostAsync("api/users/auth", new
+            {
+                Email = user1Email,
+                Password = "Test123!"
+            });
+            user1Id = authRes.Json.GetProperty("User").GetProperty("Id").GetString()!;
+            test.SetBearer(authRes.Json.GetProperty("JwtToken").GetString()!);
+
+            var res = await test.GetAsync($"api/users/score/{user1Id}");
+            test.Assert(res.Code == 200, "Expected HTTP 200 for getting user1 score.", res.Json.ToString());
+        });
+
+        await test.Step("Get user2 score (voter - should have lost points from downvoting)", async () =>
+        {
+            var authRes = await test.PostAsync("api/users/auth", new
+            {
+                Email = user2Email,
+                Password = "Test123!"
+            });
+            user2Id = authRes.Json.GetProperty("User").GetProperty("Id").GetString()!;
+            test.SetBearer(authRes.Json.GetProperty("JwtToken").GetString()!);
+
+            var res = await test.GetAsync($"api/users/score/{user2Id}");
+            test.Assert(res.Code == 200, "Expected HTTP 200 for getting user2 score.", res.Json.ToString());
+        });
     }
 }
