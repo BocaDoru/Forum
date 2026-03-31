@@ -29,3 +29,9 @@ public partial class AuthRequest : IRequestBase
         return null;
     }
 }
+
+public partial class UpdateUserScoreRequest : IRequestBase
+{
+    public string? Validate() => string.IsNullOrEmpty(UserId) ? "User ID is missing." : null;
+}
+
