@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using System.Net;
 using http.Auth;
@@ -28,6 +28,12 @@ builder.Services.AddGrpcClient<usersService.usersServiceClient>(o =>
 });
 
 builder.Services.AddGrpcClient<forumService.forumServiceClient>(o =>
+{
+    string? address = builder.Configuration["GrpcServices:ForumService"];
+    o.Address = new Uri(address!);
+});
+
+builder.Services.AddGrpcClient<commentsService.commentsServiceClient>(o =>
 {
     string? address = builder.Configuration["GrpcServices:ForumService"];
     o.Address = new Uri(address!);
