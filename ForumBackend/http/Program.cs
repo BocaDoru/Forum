@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using System.Net;
 using http.Auth;
@@ -31,6 +31,12 @@ var forumUri = new Uri(builder.Configuration["GrpcServices:ForumService"]!);
 builder.Services.AddGrpcClient<forumService.forumServiceClient>(o => o.Address = forumUri);
 builder.Services.AddGrpcClient<votesService.votesServiceClient>(o => o.Address = forumUri);
 
+builder.Services.AddGrpcClient<commentsService.commentsServiceClient>(o =>
+{
+    string? address = builder.Configuration["GrpcServices:ForumService"];
+    o.Address = new Uri(address!);
+});
+
 builder.Services.AddGrpcClient<imagesService.imagesServiceClient>(o =>
 {
     string? address = builder.Configuration["GrpcServices:ImagesService"];
@@ -47,7 +53,8 @@ builder.Services.AddAuthentication(options =>
 );
 
 builder.Services.AddAuthorizationBuilder()
-    .AddPolicy(ForumPolicy.AuthenticatedUser, ForumPolicy.AuthenticatedUserPolicy);
+    .AddPolicy(ForumPolicy.AuthenticatedUser, ForumPolicy.AuthenticatedUserPolicy)
+    .AddPolicy(ForumPolicy.Moderator, ForumPolicy.ModeratorPolicy);
 
 builder.Services.AddFastEndpoints();
 

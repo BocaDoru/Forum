@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
@@ -24,6 +24,7 @@
   <ItemGroup>
     <Protobuf Include="..\users\Protos\usersService.proto" AdditionalImportDirs="../commons" GrpcServices="Client" Link="Protos\usersService.proto" />
     <Protobuf Include="..\forum\Protos\forumService.proto" AdditionalImportDirs="../commons" GrpcServices="Client" Link="Protos\forumService.proto" />
+    <Protobuf Include="..\forum\Protos\commentsService.proto" AdditionalImportDirs="../commons" GrpcServices="Client" Link="Protos\commentsService.proto" />
 	<Protobuf Include="..\forum\Protos\votesService.proto" AdditionalImportDirs="../commons" GrpcServices="Client" Link="Protos\votesService.proto" />
     <Protobuf Include="..\images\Protos\imagesService.proto" AdditionalImportDirs="../commons" GrpcServices="Client" Link="Protos\imagesService.proto" />
   </ItemGroup>
