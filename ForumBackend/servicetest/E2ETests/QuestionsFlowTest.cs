@@ -100,11 +100,10 @@ public class QuestionsFlowTest : ITestFlow
 
         await test.Step("Edit question (Success)", async () =>
         {
-            using var form = new MultipartFormDataContent();
-
-            form.Add(new StringContent("in_progress"), "Status");
-
-            var res = await test.PutAsync($"api/questions/{questionId}", form);
+            var res = await test.PutAsync($"api/questions/{questionId}", new
+            {
+                Status = "in_progress"
+            });
 
             test.Assert(res.Code == 200, "Expected HTTP 200 because status changed", res.Json.ToString());
         });
@@ -112,14 +111,13 @@ public class QuestionsFlowTest : ITestFlow
         string updatedTitle = "My E2E Test Title - UPDATED";
         await test.Step("Edit question (Success)", async () =>
         {
-            using var form = new MultipartFormDataContent();
-
-            form.Add(new StringContent(updatedTitle), "Title");
-            form.Add(new StringContent("This text has been updated via E2E test."), "Text");
-            form.Add(new StringContent(tagId), "TagIds");
-            form.Add(new StringContent("received"), "Status");
-
-            var res = await test.PutAsync($"api/questions/{questionId}", form);
+            var res = await test.PutAsync($"api/questions/{questionId}", new
+            {
+                Title = updatedTitle,
+                Text = "This text has been updated via E2E test.",
+                TagIds = new[] { tagId },
+                Status = "received"
+            });
 
             test.Assert(res.Code == 200, "Expected HTTP 200 for successfully editing the question.", res.Json.ToString());
         });
