@@ -33,7 +33,7 @@ try
             }
             catch
             {
-                await Task.Delay(1500);
+                await Task.Delay(3000);
             }
         }
 
