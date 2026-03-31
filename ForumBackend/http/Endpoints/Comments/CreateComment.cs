@@ -1,13 +1,17 @@
 ﻿using commons.Protos;
 using forumServiceClient;
+using Google.Protobuf;
 using http.Auth;
+using imagesServiceClient;
 
 namespace http.Endpoints.Comments;
 
-public record CreateCommentApiRequest(string QuestionId, string Text, string? ImageId);
+public record CreateCommentApiRequest(string QuestionId, string Text, IFormFile? Image);
 public class CreateComment(ILogger<CreateComment> logger) : ForumEndpoint<CreateCommentApiRequest>(logger)
 {
     public commentsService.commentsServiceClient Client { get; set; } = default!;
+
+    public imagesService.imagesServiceClient ImagesClient { get; set; } = default!;
 
     public override void Configure()
     {
@@ -31,9 +35,31 @@ public class CreateComment(ILogger<CreateComment> logger) : ForumEndpoint<Create
             Text = req.Text
         };
 
-        if (req.ImageId is not null)
+        string? imageId;
+        if (req.Image is not null && req.Image.Length != 0)
         {
-            grpcReq.ImageId = req.ImageId;
+            using MemoryStream ms = new();
+            await req.Image.CopyToAsync(ms, cancellationToken);
+
+            byte[] bytes = ms.ToArray();
+
+            var uploadReq = new UploadRequest
+            {
+                FileName = req.Image.FileName,
+                Data = ByteString.CopyFrom(bytes)
+            };
+
+            MessageResponse res = await ImagesClient.UploadAsync(uploadReq, null, null, cancellationToken);
+            if (!res.Success || string.IsNullOrEmpty(res.Body))
+            {
+                logger.LogError("Upload image failed with Code:{code}, Errors:{err}", res.Code, res.Errors);
+
+                await HandleErrorsAsync(res.Code, res.Errors, cancellationToken);
+                return;
+            }
+
+            imageId = res.Payload.GetString("Id");
+            grpcReq.ImageId = imageId;
         }
 
         var response = await Client.CreateCommentAsync(grpcReq, null, null, cancellationToken);
