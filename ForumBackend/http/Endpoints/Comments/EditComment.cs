@@ -1,18 +1,23 @@
 using commons.Protos;
-using forumServiceClient;
+using commentsServiceClient;
+using Google.Protobuf;
 using http.Auth;
+using imagesServiceClient;
 
 namespace http.Endpoints.Comments;
 
-public record EditCommentApiRequest(string CommentId, string Text, string? ImageId);
+public record EditCommentApiRequest(string CommentId, string? Text, IFormFile? Image);
 
 public class EditComment(ILogger<EditComment> logger) : ForumEndpoint<EditCommentApiRequest>(logger)
 {
-    public commentsService.commentsServiceClient Client { get; set; } = default!;
+    public commentsService.commentsServiceClient CommentsClient { get; set; } = default!;
+    public imagesService.imagesServiceClient ImagesClient { get; set; } = default!;
 
     public override void Configure()
     {
         Put("api/comments/edit");
+        AllowFileUploads();
+
         Policies(ForumPolicy.AuthenticatedUser);
     }
 
@@ -26,25 +31,49 @@ public class EditComment(ILogger<EditComment> logger) : ForumEndpoint<EditCommen
             return;
         }
 
-        if (string.IsNullOrWhiteSpace(req.Text))
+        if (string.IsNullOrWhiteSpace(req.Text) && (req.Image is null || req.Image.Length == 0))
         {
-            await HandleErrorsAsync(400, "Comments need to have text.", cancellationToken);
+            await HandleErrorsAsync(400, "No changes were made to the comment.", cancellationToken);
             return;
         }
 
-        var grpcReq = new EditCommentRequest
+        var editReq = new EditCommentRequest
         {
             AuthorId = userId,
             CommentId = req.CommentId,
-            Text = req.Text
         };
 
-        if (req.ImageId is not null)
+        if (!string.IsNullOrEmpty(req.Text))
+            editReq.Text = req.Text;
+
+        string? imageId;
+        if (req.Image is not null && req.Image.Length != 0)
         {
-            grpcReq.ImageId = req.ImageId;
+            using MemoryStream ms = new();
+            await req.Image.CopyToAsync(ms, cancellationToken);
+
+            byte[] bytes = ms.ToArray();
+
+            var uploadReq = new UploadRequest
+            {
+                FileName = req.Image.FileName,
+                Data = ByteString.CopyFrom(bytes)
+            };
+
+            MessageResponse res = await ImagesClient.UploadAsync(uploadReq, null, null, cancellationToken);
+            if (!res.Success || string.IsNullOrEmpty(res.Body))
+            {
+                logger.LogError("Upload image failed with Code:{code}, Errors:{err}", res.Code, res.Errors);
+
+                await HandleErrorsAsync(res.Code, res.Errors, cancellationToken);
+                return;
+            }
+
+            imageId = res.Payload.GetString("Id");
+            editReq.ImageId = imageId;
         }
 
-        var response = await Client.EditCommentAsync(grpcReq, null, null, cancellationToken);
+        var response = await CommentsClient.EditCommentAsync(editReq, null, null, cancellationToken);
         await SendAsync(response, cancellationToken: cancellationToken);
     }
 }

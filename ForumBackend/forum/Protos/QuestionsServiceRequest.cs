@@ -1,8 +1,5 @@
 ﻿using commons.MessageBase;
-using DnsClient.Internal;
-using static System.Net.Mime.MediaTypeNames;
-
-namespace forumServiceClient;
+namespace questionsServiceClient;
 
 public partial class CreateQuestionRequest : IRequestBase
 {
@@ -22,8 +19,8 @@ public partial class EditQuestionRequest : IRequestBase
     {
         if (string.IsNullOrEmpty(QuestionId) || string.IsNullOrEmpty(UserId))
             return "Question metadata are missing.";
-        if (string.IsNullOrEmpty(Title) || string.IsNullOrEmpty(Text) || TagIds is null || TagIds.Count < 1 || string.IsNullOrEmpty(Status))
-            return "Question details are incomplete";
+        if (string.IsNullOrEmpty(Title) && string.IsNullOrEmpty(Text) && (TagIds is null || TagIds.Count < 1) && string.IsNullOrEmpty(ImageId) && string.IsNullOrEmpty(Status))
+            return "No changes were made to the question.";
         return null;
     }
 }

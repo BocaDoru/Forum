@@ -1,11 +1,11 @@
 ﻿using commons.MessageBase;
 using commons.Protos;
-using forumServiceClient;
+using questionsServiceClient;
 using Grpc.Core;
 
 namespace forum;
 
-public class ForumService(MessageDispatcher dispatcher) : forumService.forumServiceBase
+public class QuestionsService(MessageDispatcher dispatcher) : questionsService.questionsServiceBase
 {
     private readonly MessageDispatcher _dispatcher = dispatcher;
 

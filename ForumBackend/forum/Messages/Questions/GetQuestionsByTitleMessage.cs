@@ -1,7 +1,7 @@
 ﻿using commons.MessageBase;
 using forum.Implementations;
 using forum.Models;
-using forumServiceClient;
+using questionsServiceClient;
 
 namespace forum.Messages.Questions;
 

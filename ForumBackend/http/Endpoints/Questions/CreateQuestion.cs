@@ -1,15 +1,15 @@
 ﻿using commons.Protos;
-using forumServiceClient;
 using Google.Protobuf;
 using http.Auth;
 using imagesServiceClient;
+using questionsServiceClient;
 
 namespace http.Endpoints.Questions;
 
 public record CreateQuestionApiRequest(string Title, string Text, IFormFile? Image, IEnumerable<string> TagIds);
 public class CreateQuestion(ILogger<CreateQuestion> logger) : ForumEndpoint<CreateQuestionApiRequest>(logger)
 {
-    public forumService.forumServiceClient ForumClient { get; set; } = default!;
+    public questionsService.questionsServiceClient QuestionsClient { get; set; } = default!;
     public imagesService.imagesServiceClient ImagesClient { get; set; } = default!;
 
     public override void Configure()
@@ -64,7 +64,7 @@ public class CreateQuestion(ILogger<CreateQuestion> logger) : ForumEndpoint<Crea
             createReq.ImageId = imageId;
         }
 
-        MessageResponse response = await ForumClient.CreateQuestionAsync(createReq, null, null, cancellationToken);
+        MessageResponse response = await QuestionsClient.CreateQuestionAsync(createReq, null, null, cancellationToken);
         await SendAsync(response, cancellationToken: cancellationToken);
     }
 }

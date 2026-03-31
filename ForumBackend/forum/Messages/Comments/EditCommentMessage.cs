@@ -1,7 +1,7 @@
 ﻿using commons.MessageBase;
 using forum.Implementations;
 using forum.Models;
-using forumServiceClient;
+using commentsServiceClient;
 
 namespace forum.Messages.Comments;
 
@@ -10,6 +10,9 @@ public class EditCommentMessage(ILogger<EditCommentMessage> logger, ICommentsSer
 {
     protected override async Task<Comment> HandleMessage(EditCommentRequest request, CancellationToken cancellationToken)
     {
-        return await commentsService.EditCommentAsync(request.CommentId, request.AuthorId, request.Text, request.ImageId);
+        string? text = request.HasText ? request.Text : null;
+        string? imageId = request.HasImageId ? request.ImageId : null;
+
+        return await commentsService.EditCommentAsync(request.CommentId, request.AuthorId, text, imageId);
     }
 }
