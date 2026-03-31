@@ -1,4 +1,4 @@
-﻿using commons;
+using commons;
 using commons.MessageBase;
 using database;
 using forum.Models;
@@ -143,7 +143,8 @@ public class QuestionsServiceImplementation(
             ImageId = imageId,
             TagIds = tags,
             Status = status,
-            CreatedAt = question.CreatedAt
+            CreatedAt = question.CreatedAt,
+            VoteCount = question.VoteCount
         };
 
         await questions.ReplaceAsync(editedQuestion);
