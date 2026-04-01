@@ -1,7 +1,7 @@
 ﻿using commons.MessageBase;
 using database;
 using forum.Models;
-using forumServiceClient;
+using questionsServiceClient;
 using MongoDB.Driver;
 using usersServiceClient;
 

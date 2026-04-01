@@ -158,11 +158,11 @@ public class VotesFlowTest : ITestFlow
         string commentId = string.Empty;
         await test.Step("Create comment as user2", async () =>
         {
-            var res = await test.PostAsync("api/comments/create", new
-            {
-                QuestionId = questionId,
-                Text = "This is a test comment"
-            });
+            using var form = new MultipartFormDataContent();
+            form.Add(new StringContent(questionId), "QuestionId");
+            form.Add(new StringContent("This is a test comment"), "Text");
+
+            var res = await test.PostAsync("api/comments/create", form);
             test.Assert(res.Code == 200, "Expected HTTP 200 for creating comment.", res.Json.ToString());
             commentId = res.Json.GetProperty("Id").GetString()!;
         });

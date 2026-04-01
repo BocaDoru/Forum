@@ -1,13 +1,13 @@
 ﻿using commons.Protos;
 using FastEndpoints;
-using forumServiceClient;
 using http.Auth;
+using questionsServiceClient;
 
 namespace http.Endpoints.Questions;
 
 public class GetQuestions(ILogger<GetQuestions> logger) : ForumEndpoint(logger)
 {
-    public forumService.forumServiceClient Client { get; set; } = default!;
+    public questionsService.questionsServiceClient Client { get; set; } = default!;
 
     public override void Configure()
     {

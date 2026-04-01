@@ -1,14 +1,16 @@
 ﻿using commons.Protos;
 using FastEndpoints;
-using forumServiceClient;
+using questionsServiceClient;
+using Google.Protobuf;
 using http.Auth;
+using imagesServiceClient;
 
 namespace http.Endpoints.UseQuestionsrs;
 
 public record EditQuestionApiRequest(string Title, string Text, string? ImageId, IEnumerable<string> TagIds, string Status);
 public class EditQuestion(ILogger<EditQuestion> logger) : ForumEndpoint<EditQuestionApiRequest>(logger)
 {
-    public forumService.forumServiceClient Client { get; set; } = default!;
+    public questionsService.questionsServiceClient Client { get; set; } = default!;
 
     public override void Configure()
     {
@@ -25,27 +27,34 @@ public class EditQuestion(ILogger<EditQuestion> logger) : ForumEndpoint<EditQues
             return;
         }
 
-        if (string.IsNullOrEmpty(req.Title) || string.IsNullOrEmpty(req.Text) || req.TagIds is null || !req.TagIds.Any() || string.IsNullOrEmpty(req.Status))
+        if (string.IsNullOrEmpty(req.Title) && string.IsNullOrEmpty(req.Text) && (req.TagIds is null || !req.TagIds.Any()) && string.IsNullOrEmpty(req.Status) && string.IsNullOrEmpty(req.ImageId))
         {
-            await HandleErrorsAsync(400, "Questions need to have a title, text and one or more tags.", cancellationToken);
+            await HandleErrorsAsync(400, "No changes were made to the question.", cancellationToken);
             return;
         }
 
-        var grpcReq = new EditQuestionRequest
+        var editReq = new EditQuestionRequest
         {
             QuestionId = questionId,
             UserId = GetUserId(),
-            Text = req.Text,
-            Title = req.Title,
-            Status = req.Status
         };
 
-        if (req.ImageId is not null)
-            grpcReq.ImageId = req.ImageId;
+        if (!string.IsNullOrEmpty(req.Title))
+            editReq.Title = req.Title;
 
-        grpcReq.TagIds.AddRange(req.TagIds);
+        if (!string.IsNullOrEmpty(req.Text))
+            editReq.Text = req.Text;
 
-        MessageResponse response = await Client.EditQuestionAsync(grpcReq, null, null, cancellationToken);
+        if (!string.IsNullOrEmpty(req.Status))
+            editReq.Status = req.Status;
+
+        if (!string.IsNullOrEmpty(req.ImageId))
+            editReq.ImageId = req.ImageId;
+
+        if (req.TagIds is not null && req.TagIds.Any())
+            editReq.TagIds.AddRange(req.TagIds);
+
+        MessageResponse response = await Client.EditQuestionAsync(editReq, null, null, cancellationToken);
         await SendAsync(response, cancellationToken: cancellationToken);
     }
 }

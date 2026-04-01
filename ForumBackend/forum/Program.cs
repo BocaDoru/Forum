@@ -40,7 +40,7 @@ builder.Services.AddSingleton<IVotesService, VotesServiceImplementation>();
 
 var app = builder.Build();
 
-app.MapGrpcService<ForumService>();
+app.MapGrpcService<QuestionsService>();
 app.MapGrpcService<CommentsService>();
 app.MapGrpcService<VotesService>();
 

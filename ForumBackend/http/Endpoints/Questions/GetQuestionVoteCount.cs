@@ -1,12 +1,12 @@
 ﻿using commons.Protos;
 using FastEndpoints;
-using forumServiceClient;
+using questionsServiceClient;
 using http.Auth;
 using http.Endpoints;
 
 public class GetQuestionVoteCount(ILogger<GetQuestionVoteCount> logger) : ForumEndpoint(logger)
 {
-    public forumService.forumServiceClient Client { get; set; } = default!;
+    public questionsService.questionsServiceClient Client { get; set; } = default!;
 
     public override void Configure()
     {

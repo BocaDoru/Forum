@@ -1,6 +1,6 @@
 ﻿using commons.MessageBase;
 using commons.Protos;
-using forumServiceClient;
+using commentsServiceClient;
 using Grpc.Core;
 
 namespace forum;

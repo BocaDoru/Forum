@@ -1,11 +1,9 @@
 ﻿using commons.Protos;
 using FastEndpoints;
-using forumServiceClient;
 using http.Auth;
-using http.Endpoints.Questions;
 using imagesServiceClient;
 
-namespace http.Endpoints;
+namespace http.Endpoints.Images;
 
 public class DownloadImage(ILogger<DownloadImage> logger) : ForumEndpoint(logger)
 {

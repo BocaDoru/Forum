@@ -3,12 +3,24 @@
     "Url": "http://localhost:5001",
     "ClientClass": "usersServiceClient"
   },
-  "forum": {
+  "questions": {
     "Url": "http://localhost:5002",
+<<<<<<< HEAD
     "ClientClass": "forumServiceClient"
   },
   "votes": {
     "Url": "http://localhost:5002",
     "ClientClass": "votesServiceClient"
+=======
+    "ClientClass": "questionsServiceClient"
+  },
+  "comments": {
+    "Url": "http://localhost:5002",
+    "ClientClass": "commentsServiceClient"
+  },
+  "images": {
+    "Url": "http://localhost:5003",
+    "ClientClass": "imagesServiceClient"
+>>>>>>> main
   }
 }

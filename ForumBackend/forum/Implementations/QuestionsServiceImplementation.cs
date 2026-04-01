@@ -10,7 +10,7 @@ namespace forum.Implementations;
 public interface IQuestionsService
 {
     Task<Question> CreateQuestionAsync(string authorId, string title, string text, string? imageId, List<string> tags);
-    Task<Question> EditQuestionAsync(string questionId, string userId, string title, string text, string? imageId, List<string> tags, Status status);
+    Task<Question> EditQuestionAsync(string questionId, string userId, string? title, string? text, string? imageId, List<string>? tags, Status? status);
     Task<bool> DeleteQuestionAsync(string questionId, string userId);
     Task<Question> UpdateStatusAsync(string questionId, Status status, string? authorId = null);
     Task<Question?> GetQuestionByIdAsync(string id);
@@ -101,7 +101,7 @@ public class QuestionsServiceImplementation(
         return await questions.DeleteWithIdAsync(questionId);
     }
 
-    public async Task<Question> EditQuestionAsync(string questionId, string userId, string title, string text, string? imageId, List<string> tags, Status status)
+    public async Task<Question> EditQuestionAsync(string questionId, string userId, string? title, string? text, string? imageId, List<string>? tags, Status? status)
     {
         var question = await GetQuestionByIdAsync(questionId);
         if (question is null)
@@ -138,11 +138,11 @@ public class QuestionsServiceImplementation(
         {
             Id = questionId,
             AuthorId = question.AuthorId,
-            Title = title,
-            Text = text,
-            ImageId = imageId,
-            TagIds = tags,
-            Status = status,
+            Title = title ?? question.Title,
+            Text = text ?? question.Text,
+            ImageId = imageId ?? question.ImageId,
+            TagIds = tags ?? question.TagIds,
+            Status = status ?? question.Status,
             CreatedAt = question.CreatedAt,
             VoteCount = question.VoteCount
         };

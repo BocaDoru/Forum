@@ -1,12 +1,13 @@
+using FastEndpoints;
+using http.Auth;
+using imagesServiceClient;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using System.Net;
-using http.Auth;
-using FastEndpoints;
+using questionsServiceClient;
+using commentsServiceClient;
 using usersServiceClient;
-using forumServiceClient;
 using votesServiceClient;
-using imagesServiceClient;
 
 AppContext.SetSwitch("System.Net.Http.SocketsHttpHandler.Http2UnencryptedSupport", true);
 
@@ -29,14 +30,10 @@ builder.Services.AddGrpcClient<usersService.usersServiceClient>(o =>
 });
 
 var forumUri = new Uri(builder.Configuration["GrpcServices:ForumService"]!);
-builder.Services.AddGrpcClient<forumService.forumServiceClient>(o => o.Address = forumUri);
-builder.Services.AddGrpcClient<votesService.votesServiceClient>(o => o.Address = forumUri);
 
-builder.Services.AddGrpcClient<commentsService.commentsServiceClient>(o =>
-{
-    string? address = builder.Configuration["GrpcServices:ForumService"];
-    o.Address = new Uri(address!);
-});
+builder.Services.AddGrpcClient<questionsService.questionsServiceClient>(o => o.Address = forumUri);
+builder.Services.AddGrpcClient<commentsService.commentsServiceClient>(o => o.Address = forumUri);
+builder.Services.AddGrpcClient<votesService.votesServiceClient>(o => o.Address = forumUri);
 
 builder.Services.AddGrpcClient<imagesService.imagesServiceClient>(o =>
 {

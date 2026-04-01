@@ -1,6 +1,6 @@
 ﻿using commons.MessageBase;
 using forum.Implementations;
-using forumServiceClient;
+using questionsServiceClient;
 
 public class GetQuestionVoteCountMessage(
     ILogger<GetQuestionVoteCountMessage> logger,

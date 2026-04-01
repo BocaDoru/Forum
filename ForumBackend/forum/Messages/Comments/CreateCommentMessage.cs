@@ -1,7 +1,7 @@
 ﻿using commons.MessageBase;
 using forum.Implementations;
 using forum.Models;
-using forumServiceClient;
+using commentsServiceClient;
 
 namespace forum.Messages.Comments;
 

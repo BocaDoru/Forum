@@ -1,5 +1,5 @@
 ﻿using commons.Protos;
-using forumServiceClient;
+using commentsServiceClient;
 using Google.Protobuf;
 using http.Auth;
 using imagesServiceClient;
@@ -9,13 +9,15 @@ namespace http.Endpoints.Comments;
 public record CreateCommentApiRequest(string QuestionId, string Text, IFormFile? Image);
 public class CreateComment(ILogger<CreateComment> logger) : ForumEndpoint<CreateCommentApiRequest>(logger)
 {
-    public commentsService.commentsServiceClient Client { get; set; } = default!;
+    public commentsService.commentsServiceClient CommentsClient { get; set; } = default!;
 
     public imagesService.imagesServiceClient ImagesClient { get; set; } = default!;
 
     public override void Configure()
     {
         Post("api/comments/create");
+        AllowFileUploads();
+
         Policies(ForumPolicy.AuthenticatedUser);
     }
 
@@ -28,7 +30,7 @@ public class CreateComment(ILogger<CreateComment> logger) : ForumEndpoint<Create
         }
 
 
-        var grpcReq = new CreateCommentRequest
+        var createReq = new CreateCommentRequest
         {
             AuthorId = GetUserId(),
             QuestionId = req.QuestionId,
@@ -59,10 +61,10 @@ public class CreateComment(ILogger<CreateComment> logger) : ForumEndpoint<Create
             }
 
             imageId = res.Payload.GetString("Id");
-            grpcReq.ImageId = imageId;
+            createReq.ImageId = imageId;
         }
 
-        var response = await Client.CreateCommentAsync(grpcReq, null, null, cancellationToken);
+        var response = await CommentsClient.CreateCommentAsync(createReq, null, null, cancellationToken);
         await SendAsync(response, cancellationToken: cancellationToken);
     }
 }
