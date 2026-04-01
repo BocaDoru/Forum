@@ -1,6 +1,6 @@
 using commons.Protos;
 using FastEndpoints;
-using forumServiceClient;
+using commentsServiceClient;
 using http.Auth;
 
 namespace http.Endpoints.Comments;

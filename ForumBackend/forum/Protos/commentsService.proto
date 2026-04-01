@@ -2,9 +2,9 @@ syntax = "proto3";
 
 import "Protos/common.proto";
 
-option csharp_namespace = "forumServiceClient";
+option csharp_namespace = "commentsServiceClient";
 
-package forumService;
+package commentsService;
 
 service commentsService
 {
@@ -24,7 +24,7 @@ message CreateCommentRequest {
 message EditCommentRequest {
   string commentId = 1;
   string authorId = 2;
-  string text = 3;
+  optional string text = 3;
   optional string imageId = 4;
 }
 
