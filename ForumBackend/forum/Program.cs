@@ -35,12 +35,13 @@ builder.Services.AddSingleton<MessageDispatcher>();
 builder.Services.AddMessageHandlers();
 
 builder.Services.AddSingleton<IQuestionsService, QuestionsServiceImplementation>();
-
 builder.Services.AddSingleton<ICommentsService, CommentsServiceImplementation>();
+builder.Services.AddSingleton<IVotesService, VotesServiceImplementation>();
 
 var app = builder.Build();
 
 app.MapGrpcService<QuestionsService>();
 app.MapGrpcService<CommentsService>();
+app.MapGrpcService<VotesService>();
 
 app.Run();

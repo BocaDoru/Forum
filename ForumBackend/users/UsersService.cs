@@ -26,4 +26,10 @@ public class UsersService(MessageDispatcher dispatcher) : usersService.usersServ
 
     public override Task<MessageResponse> UnbanUser(UnbanRequest request, ServerCallContext serverCallContext)
         => _dispatcher.DispatchAsync(request, serverCallContext.CancellationToken);
+
+    public override Task<MessageResponse> UpdateUserScore(UpdateUserScoreRequest request, ServerCallContext serverCallContext)
+        => _dispatcher.DispatchAsync(request, serverCallContext.CancellationToken);
+
+    public override Task<MessageResponse> GetUserScore(UserIdRequest request, ServerCallContext serverCallContext)
+        => _dispatcher.DispatchAsync(request, serverCallContext.CancellationToken);
 }

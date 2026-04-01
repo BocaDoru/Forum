@@ -9,4 +9,5 @@ public record Comment : DatabaseModel
     public required string Text { get; set; } = string.Empty;
     public string? ImageId { get; set; } = null;
     public required DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+    public int VoteCount { get; set; } = 0;
 }

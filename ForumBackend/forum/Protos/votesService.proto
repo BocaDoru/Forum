@@ -1,0 +1,24 @@
+syntax = "proto3";
+
+import "Protos/common.proto";
+
+option csharp_namespace = "votesServiceClient";
+
+package votesService;
+
+service votesService {
+  rpc CastVote (CastVoteRequest) returns (commons.protos.MessageResponse);
+  rpc GetVoteCount (GetVoteCountRequest) returns (commons.protos.MessageResponse);
+}
+
+message CastVoteRequest {
+  string userId = 1;
+  string postId = 2;
+  bool isQuestion = 3;
+  bool isDownvote = 4;
+}
+
+message GetVoteCountRequest {
+  string postId = 1;
+  bool isQuestion = 2;
+}

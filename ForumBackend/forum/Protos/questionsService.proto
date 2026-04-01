@@ -19,6 +19,7 @@ service questionsService
 	rpc GetQuestionsByTag (QuestionsByTagRequest) returns (commons.protos.MessageResponse);
 	rpc CreateTag (CreateTagRequest) returns (commons.protos.MessageResponse);
 	rpc GetTagByName (TagNameRequest) returns (commons.protos.MessageResponse);
+	rpc GetQuestionVoteCount (QuestionIdRequest) returns (commons.protos.MessageResponse);
 }
 
 message CreateQuestionRequest
@@ -91,4 +92,3 @@ message TagNameRequest
 {
 	string name = 1;
 }
-

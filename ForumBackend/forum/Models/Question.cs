@@ -14,6 +14,7 @@ public record Question : DatabaseModel
     public string? ImageId { get; set; } = null;
     public required List<string> TagIds { get; set; } = new List<string>();
     public required DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+    public int VoteCount { get; set; } = 0;
 }
 
 [CollectionName("Tags")]

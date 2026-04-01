@@ -7,6 +7,7 @@ using System.Net;
 using questionsServiceClient;
 using commentsServiceClient;
 using usersServiceClient;
+using votesServiceClient;
 
 AppContext.SetSwitch("System.Net.Http.SocketsHttpHandler.Http2UnencryptedSupport", true);
 
@@ -32,6 +33,7 @@ var forumUri = new Uri(builder.Configuration["GrpcServices:ForumService"]!);
 
 builder.Services.AddGrpcClient<questionsService.questionsServiceClient>(o => o.Address = forumUri);
 builder.Services.AddGrpcClient<commentsService.commentsServiceClient>(o => o.Address = forumUri);
+builder.Services.AddGrpcClient<votesService.votesServiceClient>(o => o.Address = forumUri);
 
 builder.Services.AddGrpcClient<imagesService.imagesServiceClient>(o =>
 {
