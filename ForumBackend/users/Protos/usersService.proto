@@ -14,6 +14,8 @@ service usersService
 	rpc AuthUser (AuthRequest) returns (commons.protos.MessageResponse);
 	rpc BanUser (BanRequest) returns (commons.protos.MessageResponse);
 	rpc UnbanUser (UnbanRequest) returns (commons.protos.MessageResponse);
+	rpc UpdateUserScore (UpdateUserScoreRequest) returns (commons.protos.MessageResponse);
+	rpc GetUserScore (UserIdRequest) returns (commons.protos.MessageResponse);
 }
 
 message UserIdRequest
@@ -51,4 +53,10 @@ message UnbanRequest
 {
 	string moderatorId = 1;
 	string userId = 2;
+}
+
+message UpdateUserScoreRequest 
+{
+    string userId = 1;
+    float delta = 2;
 }

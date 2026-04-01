@@ -14,12 +14,14 @@ public interface IQuestionsService
     Task<bool> DeleteQuestionAsync(string questionId, string userId);
     Task<Question> UpdateStatusAsync(string questionId, Status status, string? authorId = null);
     Task<Question?> GetQuestionByIdAsync(string id);
+    Task<Question> UpdateVoteCountAsync(string questionId, int delta);
     Task<List<Question>?> GetQuestionsByAuthorAsync(string authorId, int skip, int limit);
     Task<List<Question>?> FindQuestionsByTitleAsync(string title, int skip, int limit);
     Task<List<Question>?> GetQuestionsByTagAsync(string tag, int skip, int limit);
     Task<List<Question>?> GetQuestionsAsync(int skip, int limit);
     Task<QuestionTag> CreateTagAsync(string name);
     Task<QuestionTag?> GetTagByNameAsync(string name);
+    Task<int> GetQuestionVoteCountAsync(string questionId);
 }
 
 public class QuestionsServiceImplementation(
@@ -141,7 +143,8 @@ public class QuestionsServiceImplementation(
             ImageId = imageId ?? question.ImageId,
             TagIds = tags ?? question.TagIds,
             Status = status ?? question.Status,
-            CreatedAt = question.CreatedAt
+            CreatedAt = question.CreatedAt,
+            VoteCount = question.VoteCount
         };
 
         await questions.ReplaceAsync(editedQuestion);
@@ -280,5 +283,32 @@ public class QuestionsServiceImplementation(
         ]);
 
         return collection;
+    }
+
+    public async Task<Question> UpdateVoteCountAsync(string questionId, int delta)
+    {
+        var question = await GetQuestionByIdAsync(questionId);
+        if (question is null)
+        {
+            _logger.LogInformation("Question:{id} could not be found.", questionId);
+            throw new NotFoundException("Question not found.");
+        }
+
+        var questions = await _questions;
+        await questions.UpdateByIdAsync(questionId, q => q.VoteCount, question.VoteCount + delta);
+
+        _logger.LogInformation("Question:{qId} vote count updated by delta:{delta}", questionId, delta);
+        return question with { VoteCount = question.VoteCount + delta };
+    }
+
+    public async Task<int> GetQuestionVoteCountAsync(string questionId)
+    {
+        var question = await GetQuestionByIdAsync(questionId);
+        if (question is null)
+        {
+            _logger.LogInformation("Question:{id} could not be found.", questionId);
+            throw new NotFoundException("Question not found.");
+        }
+        return question.VoteCount;
     }
 }
