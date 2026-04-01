@@ -2,11 +2,11 @@
 
 import "Protos/common.proto";
 
-option csharp_namespace = "forumServiceClient";
+option csharp_namespace = "questionsServiceClient";
 
-package forumService;
+package questionsService;
 
-service forumService
+service questionsService
 {
 	rpc CreateQuestion (CreateQuestionRequest) returns (commons.protos.MessageResponse);
 	rpc EditQuestion (EditQuestionRequest) returns (commons.protos.MessageResponse);
@@ -34,11 +34,11 @@ message EditQuestionRequest
 {
 	string questionId = 1;
 	string userId = 2;
-	string title = 3;
-	string text = 4;
+	optional string title = 3;
+	optional string text = 4;
 	optional string imageId = 5;
 	repeated string tagIds = 6;
-	string status = 7;
+	optional string status = 7;
 }
 
 message DeleteQuestionRequest

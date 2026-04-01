@@ -1,10 +1,12 @@
 using commons.Protos;
-using forumServiceClient;
+using commentsServiceClient;
+using Google.Protobuf;
 using http.Auth;
+using imagesServiceClient;
 
 namespace http.Endpoints.Comments;
 
-public record EditCommentApiRequest(string CommentId, string Text, string? ImageId);
+public record EditCommentApiRequest(string CommentId, string? Text, string? ImageId);
 
 public class EditComment(ILogger<EditComment> logger) : ForumEndpoint<EditCommentApiRequest>(logger)
 {
@@ -26,25 +28,25 @@ public class EditComment(ILogger<EditComment> logger) : ForumEndpoint<EditCommen
             return;
         }
 
-        if (string.IsNullOrWhiteSpace(req.Text))
+        if (string.IsNullOrWhiteSpace(req.Text) && string.IsNullOrWhiteSpace(req.ImageId))
         {
-            await HandleErrorsAsync(400, "Comments need to have text.", cancellationToken);
+            await HandleErrorsAsync(400, "No changes were made to the comment.", cancellationToken);
             return;
         }
 
-        var grpcReq = new EditCommentRequest
+        var editReq = new EditCommentRequest
         {
             AuthorId = userId,
             CommentId = req.CommentId,
-            Text = req.Text
         };
 
-        if (req.ImageId is not null)
-        {
-            grpcReq.ImageId = req.ImageId;
-        }
+        if (!string.IsNullOrEmpty(req.ImageId))
+            editReq.ImageId = req.ImageId;
 
-        var response = await Client.EditCommentAsync(grpcReq, null, null, cancellationToken);
+        if (!string.IsNullOrEmpty(req.Text))
+            editReq.Text = req.Text;
+
+        var response = await Client.EditCommentAsync(editReq, null, null, cancellationToken);
         await SendAsync(response, cancellationToken: cancellationToken);
     }
 }

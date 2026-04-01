@@ -1,9 +1,6 @@
 ﻿using commons.MessageBase;
-using DnsClient.Internal;
-using forum.Models;
-using static System.Net.Mime.MediaTypeNames;
 
-namespace forumServiceClient;
+namespace commentsServiceClient;
 
 public partial class CreateCommentRequest : IRequestBase
 {
@@ -23,8 +20,8 @@ public partial class EditCommentRequest : IRequestBase
     {
         if (string.IsNullOrEmpty(CommentId) || string.IsNullOrEmpty(AuthorId))
             return "Comment metadata are missing.";
-        if (string.IsNullOrEmpty(Text))
-            return "Comment text cannot be empty.";
+        if (string.IsNullOrEmpty(Text) && string.IsNullOrEmpty(ImageId))
+            return "No changes were made to the comment.";
         return null;
     }
 }

@@ -10,7 +10,7 @@ namespace forum.Implementations;
 public interface ICommentsService
 {
     Task<Comment> CreateCommentAsync(string questionId, string authorId, string text, string? imageId);
-    Task<Comment> EditCommentAsync(string commentId, string authorId, string text, string? imageId);
+    Task<Comment> EditCommentAsync(string commentId, string authorId, string? text, string? imageId);
     Task<bool> DeleteCommentAsync(string commentId, string authorId);
     Task<List<Comment>> GetCommentsForQuestionAsync(string questionId);
 }
@@ -73,23 +73,31 @@ public class CommentsServiceImplementation(
         return comment;
     }
 
-    public async Task<Comment> EditCommentAsync(string commentId, string authorId, string text, string? imageId)
+    public async Task<Comment> EditCommentAsync(string commentId, string authorId, string? text, string? imageId)
     {
         var collections = await _comments;
-        var comments = await collections.GetOneByIdAsync(commentId);
-        if (comments is null) throw new NotFoundException("Comment not found.");
+        var comment = await collections.GetOneByIdAsync(commentId);
+        if (comment is null) throw new NotFoundException("Comment not found.");
 
-        if (comments.AuthorId != authorId)
+        if (comment.AuthorId != authorId)
         {
             var res = await _userService.GetUserByIdAsync(new UserIdRequest { Id = authorId });
             if (res is null || !res.Success || !res.Payload.GetBool("IsModerator"))
                 throw new ForbiddenException("Only the author or a moderator can edit this comment.");
         }
 
-        comments.Text = text;
-        comments.ImageId = imageId;
-        await collections.ReplaceAsync(comments);
-        return comments;
+        var editedComment = new Comment
+        {
+            Id = commentId,
+            QuestionId = comment.QuestionId,
+            AuthorId = authorId,
+            Text = text ?? comment.Text,
+            ImageId = imageId ?? comment.ImageId,
+            CreatedAt = comment.CreatedAt
+        };
+
+        await collections.ReplaceAsync(editedComment);
+        return editedComment;
     }
 
     public async Task<bool> DeleteCommentAsync(string commentId, string authorId)

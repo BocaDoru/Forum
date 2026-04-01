@@ -1,12 +1,12 @@
 ﻿using commons.Protos;
-using forumServiceClient;
 using http.Auth;
+using questionsServiceClient;
 
 namespace http.Endpoints.Questions;
 
 public class SolveQuestion(ILogger<SolveQuestion> logger) : ForumEndpoint<string>(logger)
 {
-    public forumService.forumServiceClient Client { get; set; } = default!;
+    public questionsService.questionsServiceClient Client { get; set; } = default!;
 
     public override void Configure()
     {
