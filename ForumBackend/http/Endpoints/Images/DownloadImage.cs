@@ -2,6 +2,7 @@
 using FastEndpoints;
 using http.Auth;
 using imagesServiceClient;
+using Microsoft.AspNetCore.StaticFiles;
 
 namespace http.Endpoints.Images;
 
@@ -24,7 +25,24 @@ public class DownloadImage(ILogger<DownloadImage> logger) : ForumEndpoint(logger
             FileId = imageId
         };
 
-        MessageResponse response = await Client.DownloadAsync(grpcReq, null, null, cancellationToken);
-        await SendAsync(response, cancellationToken: cancellationToken);
+        MessageResponse grpcResponse = await Client.DownloadAsync(grpcReq, null, null, cancellationToken);
+        if (grpcResponse is null || string.IsNullOrEmpty(grpcResponse.Body))
+        {
+            await HandleErrorsAsync(grpcResponse?.Code ?? 500, grpcResponse?.Errors ?? "Internal Error", cancellationToken);
+            return;
+        }
+
+        var payload = grpcResponse.Payload;
+        string fileName = payload.GetString("FileName");
+        byte[] data = payload.GetBytesFromBase64("Data");
+
+        var provider = new FileExtensionContentTypeProvider();
+
+        if (!provider.TryGetContentType(fileName, out var contentType))
+        {
+            contentType = "application/octet-stream";
+        }
+
+        await Send.BytesAsync(data, fileName, contentType, null, false, cancellationToken);
     }
 }
