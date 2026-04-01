@@ -1,6 +1,6 @@
 ﻿using commons.MessageBase;
 using forum.Implementations;
-using forumServiceClient;
+using votesServiceClient;
 
 namespace forum.Messages.Votes;
 

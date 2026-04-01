@@ -11,19 +11,13 @@ public class GetUserScore(ILogger<GetUserScore> logger) : ForumEndpoint(logger)
 
     public override void Configure()
     {
-        Get("api/users/score/{userId}");
+        Get("api/users/score");
         Policies(ForumPolicy.AuthenticatedUser);
     }
 
     public override async Task HandleAsync(EmptyRequest req, CancellationToken cancellationToken)
     {
-        string? userId = Route<string>("userId");
-        if (string.IsNullOrEmpty(userId))
-        {
-            await HandleErrorsAsync(400, "User ID is missing.", cancellationToken);
-            return;
-        }
-
+        string userId = GetUserId();
         var grpcReq = new UserIdRequest { Id = userId };
         MessageResponse response = await Client.GetUserScoreAsync(grpcReq, null, null, cancellationToken);
         await SendAsync(response, cancellationToken: cancellationToken);

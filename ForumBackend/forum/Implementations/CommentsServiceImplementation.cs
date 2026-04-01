@@ -13,6 +13,9 @@ public interface ICommentsService
     Task<Comment> EditCommentAsync(string commentId, string authorId, string text, string? imageId);
     Task<bool> DeleteCommentAsync(string commentId, string authorId);
     Task<List<Comment>> GetCommentsForQuestionAsync(string questionId);
+    Task<Comment?> GetCommentByIdAsync(string commentId);
+    Task<Comment> UpdateVoteCountAsync(string commentId, int delta);
+    Task<int> GetCommentVoteCountAsync(string commentId);
 }
 
 public class CommentsServiceImplementation(
@@ -113,7 +116,7 @@ public class CommentsServiceImplementation(
         var collections = await _comments;
         return await collections.MongoCollection.Aggregate()
             .Match(Builders<Comment>.Filter.Eq(c => c.QuestionId, questionId))
-            .SortBy(c => c.CreatedAt)
+            .SortByDescending(c => c.VoteCount)
             .ToListAsync();
     }
 
@@ -125,5 +128,38 @@ public class CommentsServiceImplementation(
             new CreateIndexModel<Comment>(questionIdIndex, new CreateIndexOptions { Name = "questionIdIndex" })
         ]);
         return collection;
+    }
+
+    public async Task<Comment?> GetCommentByIdAsync(string commentId)
+    {
+        var comments = await _comments;
+        return await comments.GetOneByIdAsync(commentId);
+    }
+
+    public async Task<Comment> UpdateVoteCountAsync(string commentId, int delta)
+    {
+        var comments = await _comments;
+        var comment = await comments.GetOneByIdAsync(commentId);
+        if (comment is null)
+        {
+            _logger.LogInformation("Comment:{id} could not be found.", commentId);
+            throw new NotFoundException("Comment not found.");
+        }
+
+        await comments.UpdateByIdAsync(commentId, c => c.VoteCount, comment.VoteCount + delta);
+        _logger.LogInformation("Comment:{cId} vote count updated by delta:{delta}", commentId, delta);
+        return comment with { VoteCount = comment.VoteCount + delta };
+    }
+
+    public async Task<int> GetCommentVoteCountAsync(string commentId)
+    {
+        var comments = await _comments;
+        var comment = await comments.GetOneByIdAsync(commentId);
+        if (comment is null)
+        {
+            _logger.LogInformation("Comment:{id} could not be found.", commentId);
+            throw new NotFoundException("Comment not found.");
+        }
+        return comment.VoteCount;
     }
 }

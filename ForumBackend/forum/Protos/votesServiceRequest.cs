@@ -1,6 +1,6 @@
 ﻿using commons.MessageBase;
 
-namespace forumServiceClient;
+namespace votesServiceClient;
 
 public partial class CastVoteRequest : IRequestBase
 {

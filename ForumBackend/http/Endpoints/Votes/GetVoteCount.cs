@@ -1,6 +1,6 @@
 ﻿using commons.Protos;
 using FastEndpoints;
-using forumServiceClient;
+using votesServiceClient;
 using http.Auth;
 
 namespace http.Endpoints.Votes;

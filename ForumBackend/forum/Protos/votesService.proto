@@ -2,9 +2,9 @@ syntax = "proto3";
 
 import "Protos/common.proto";
 
-option csharp_namespace = "forumServiceClient";
+option csharp_namespace = "votesServiceClient";
 
-package forumService;
+package votesService;
 
 service votesService {
   rpc CastVote (CastVoteRequest) returns (commons.protos.MessageResponse);

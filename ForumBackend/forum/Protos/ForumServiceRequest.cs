@@ -113,8 +113,3 @@ public partial class TagNameRequest : IRequestBase
 {
     public string? Validate() => string.IsNullOrEmpty(Name) ? "Tag can not be empty." : null;
 }
-
-public partial class UpdateQuestionVoteCountRequest : IRequestBase
-{
-    public string? Validate() => string.IsNullOrEmpty(QuestionId) ? "Question ID is missing." : null;
-}

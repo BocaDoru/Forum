@@ -5,6 +5,7 @@ using http.Auth;
 using FastEndpoints;
 using usersServiceClient;
 using forumServiceClient;
+using votesServiceClient;
 using imagesServiceClient;
 
 AppContext.SetSwitch("System.Net.Http.SocketsHttpHandler.Http2UnencryptedSupport", true);

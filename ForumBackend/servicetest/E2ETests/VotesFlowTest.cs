@@ -1,7 +1,7 @@
 ﻿using System;
+using System.Net.Http.Headers;
 
 namespace servicetest.E2ETests;
-using System.Net.Http.Headers;
 
 public class VotesFlowTest : ITestFlow
 {
@@ -9,7 +9,7 @@ public class VotesFlowTest : ITestFlow
     {
         Console.WriteLine("RUNNING VOTES E2E FLOW");
 
-        // Register and login user1 (question author)
+        // Register and login user1 (author)
         string user1Email = $"user1_{Guid.NewGuid()}@test.com";
         await test.Step("Register user1 (author)", async () =>
         {
@@ -34,7 +34,7 @@ public class VotesFlowTest : ITestFlow
             test.SetBearer(res.Json.GetProperty("JwtToken").GetString()!);
         });
 
-        // Create a tag and question with user1
+        // Create tag and question with user1
         string tagName = $"vote-tag-{Guid.NewGuid()}";
         await test.Step("Create tag", async () =>
         {
@@ -94,7 +94,7 @@ public class VotesFlowTest : ITestFlow
             test.SetBearer(res.Json.GetProperty("JwtToken").GetString()!);
         });
 
-        // Vote tests with user2
+        // Question vote tests
         await test.Step("Cast upvote on question (Success)", async () =>
         {
             var res = await test.PostAsync("api/votes/cast", new
@@ -148,14 +148,27 @@ public class VotesFlowTest : ITestFlow
             test.Assert(res.Code == 200, "Expected HTTP 200 for switching vote direction.", res.Json.ToString());
         });
 
-        await test.Step("Get vote count (Success)", async () =>
+        await test.Step("Get question vote count (Success)", async () =>
         {
-            var res = await test.GetAsync($"api/votes/{questionId}/true");
-            test.Assert(res.Code == 200, "Expected HTTP 200 for getting vote count.", res.Json.ToString());
+            var res = await test.GetAsync($"api/questions/{questionId}/votecount");
+            test.Assert(res.Code == 200, "Expected HTTP 200 for getting question vote count.", res.Json.ToString());
         });
 
-        // Switch back to user1 and try to self-vote
-        await test.Step("Login user1 again", async () =>
+        // User2 creates a comment on user1's question
+        string commentId = string.Empty;
+        await test.Step("Create comment as user2", async () =>
+        {
+            var res = await test.PostAsync("api/comments/create", new
+            {
+                QuestionId = questionId,
+                Text = "This is a test comment"
+            });
+            test.Assert(res.Code == 200, "Expected HTTP 200 for creating comment.", res.Json.ToString());
+            commentId = res.Json.GetProperty("Id").GetString()!;
+        });
+
+        // Switch to user1 to vote on user2's comment
+        await test.Step("Login user1", async () =>
         {
             var res = await test.PostAsync("api/users/auth", new
             {
@@ -166,7 +179,18 @@ public class VotesFlowTest : ITestFlow
             test.SetBearer(res.Json.GetProperty("JwtToken").GetString()!);
         });
 
-        await test.Step("Self-vote (Fail - cannot vote on own post)", async () =>
+        await test.Step("Cast upvote on comment as user1 (Success)", async () =>
+        {
+            var res = await test.PostAsync("api/votes/cast", new
+            {
+                PostId = commentId,
+                IsQuestion = false,
+                IsDownvote = false
+            });
+            test.Assert(res.Code == 200, "Expected HTTP 200 for upvoting comment.", res.Json.ToString());
+        });
+
+        await test.Step("Self-vote on question (Fail)", async () =>
         {
             var res = await test.PostAsync("api/votes/cast", new
             {
@@ -174,57 +198,47 @@ public class VotesFlowTest : ITestFlow
                 IsQuestion = true,
                 IsDownvote = false
             });
-            test.Assert(res.Code == 400, "Expected HTTP 400 for self-vote.", res.Json.ToString());
+            test.Assert(res.Code == 400, "Expected HTTP 400 for self-vote on question.", res.Json.ToString());
         });
 
-        await test.Step("Get question vote count (Success)", async () =>
+        await test.Step("Self-vote on comment (Fail)", async () =>
         {
-            var res = await test.GetAsync($"api/questions/{questionId}/votecount");
-            test.Assert(res.Code == 200, "Expected HTTP 200 for getting question vote count.", res.Json.ToString());
-        });
-
-        // Switch back to user2 to check scores
-        await test.Step("Login user2 again", async () =>
-        {
-            var res = await test.PostAsync("api/users/auth", new
+            // login user2 to self-vote on their own comment
+            var authRes = await test.PostAsync("api/users/auth", new
             {
                 Email = user2Email,
                 Password = "Test123!"
             });
-            test.Assert(res.Code == 200, "Expected HTTP 200 for login user2.", res.Json.ToString());
-            test.SetBearer(res.Json.GetProperty("JwtToken").GetString()!);
+            test.SetBearer(authRes.Json.GetProperty("JwtToken").GetString()!);
+
+            var res = await test.PostAsync("api/votes/cast", new
+            {
+                PostId = commentId,
+                IsQuestion = false,
+                IsDownvote = false
+            });
+            test.Assert(res.Code == 400, "Expected HTTP 400 for self-vote on comment.", res.Json.ToString());
         });
 
-        string user1Id = string.Empty;
-        string user2Id = string.Empty;
-
-        await test.Step("Get user1 score (author - should have lost points from downvote)", async () =>
+        // Check user scores
+        await test.Step("Get own score (user2)", async () =>
         {
-            // login as user1 first to get their id
+            var res = await test.GetAsync("api/users/score");
+            test.Assert(res.Code == 200, "Expected HTTP 200 for getting user score.", res.Json.ToString());
+        });
+
+        await test.Step("Login user1 and get own score", async () =>
+        {
             var authRes = await test.PostAsync("api/users/auth", new
             {
                 Email = user1Email,
                 Password = "Test123!"
             });
-            user1Id = authRes.Json.GetProperty("User").GetProperty("Id").GetString()!;
+
             test.SetBearer(authRes.Json.GetProperty("JwtToken").GetString()!);
 
-            var res = await test.GetAsync($"api/users/score/{user1Id}");
+            var res = await test.GetAsync("api/users/score");
             test.Assert(res.Code == 200, "Expected HTTP 200 for getting user1 score.", res.Json.ToString());
-        });
-
-        await test.Step("Get user2 score (voter - should have lost points from downvoting)", async () =>
-        {
-            var authRes = await test.PostAsync("api/users/auth", new
-            {
-                Email = user2Email,
-                Password = "Test123!"
-            });
-            user2Id = authRes.Json.GetProperty("User").GetProperty("Id").GetString()!;
-            test.SetBearer(authRes.Json.GetProperty("JwtToken").GetString()!);
-
-            var res = await test.GetAsync($"api/users/score/{user2Id}");
-            test.Assert(res.Code == 200, "Expected HTTP 200 for getting user2 score.", res.Json.ToString());
         });
     }
 }
