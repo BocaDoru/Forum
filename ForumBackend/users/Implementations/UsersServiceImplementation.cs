@@ -21,6 +21,10 @@ public interface IUsersService
 
     Task<UserWithJwt> Register(string username, string email, string password, bool isModerator);
 
+    Task<User> UpdateUsernameAsync(string userId, string username);
+    Task DeleteUserAsync(string userId);
+    Task ChangePasswordAsync(string userId, string oldPassword, string newPassword);
+
     Task BanUserAsync(string moderatorId, string userId, string? reason);
     Task UnbanUserAsync(string moderatorId, string userId);
 
@@ -114,6 +118,57 @@ public class UsersServiceImplementation(
         return new UserWithJwt(newUser, jwtToken);
     }
 
+    public async Task<User> UpdateUsernameAsync(string userId, string username)
+    {
+        var user = await GetUserById(userId);
+        if (user is null)
+        {
+            _logger.LogInformation("User with id:{id} does not exist", userId);
+            throw new BadRequestException("User not found.");
+        }
+
+        user.Username = username;
+
+        var users = await _users;
+        await users.ReplaceAsync(user);
+
+        return user;
+    }
+
+    public async Task ChangePasswordAsync(string userId, string oldPassword, string newPassword)
+    {
+        var user = await GetUserById(userId);
+        if (user is null)
+        {
+            _logger.LogInformation("User with id:{id} does not exist", userId);
+            throw new BadRequestException("User not found.");
+        }
+
+        if (!VerifyPassword(oldPassword, user.Password))
+        {
+            _logger.LogInformation("Incorrect password for user id:{id}", userId);
+            throw new BadRequestException("Invalid email or password.");
+        }
+
+        user.Password = newPassword;
+
+        var users = await _users;
+        await users.ReplaceAsync(user);
+    }
+
+    public async Task DeleteUserAsync(string userId)
+    {
+        var user = await GetUserById(userId);
+        if (user is null)
+        {
+            _logger.LogInformation("User with id:{id} does not exist", userId);
+            throw new BadRequestException("User not found.");
+        }
+
+        var users = await _users;
+        await users.DeleteWithIdAsync(userId);
+    }
+
     public async Task BanUserAsync(string moderatorId, string userId, string? reason)
     {
         var moderator = await GetUserById(moderatorId);
@@ -137,6 +192,7 @@ public class UsersServiceImplementation(
         await SendBannedEmail(user, moderator, reason);
         _logger.LogInformation("User:{userId} was banned by moderator:{moderatorId} for {reason}", userId, moderatorId, reason ?? "Bad behaviour");
     }
+
     public async Task UnbanUserAsync(string moderatorId, string userId)
     {
         var moderator = await GetUserById(moderatorId);
@@ -164,6 +220,37 @@ public class UsersServiceImplementation(
         await users.ReplaceAsync(user);
 
         _logger.LogInformation("User:{userId} was unbanned by moderator:{moderatorId}", userId, moderatorId);
+    }
+
+    public async Task<User> UpdateScore(string userId, float delta)
+    {
+        var users = await _users;
+
+        User? user = await GetUserById(userId);
+        if (user is null)
+        {
+            _logger.LogInformation("User:{id} was not found.", userId);
+            throw new NotFoundException("User not found.");
+        }
+
+        float newScore = user.Score + delta;
+
+        await users.UpdateByIdAsync(userId, u => u.Score, newScore);
+
+        _logger.LogInformation("User:{uId} score updated by delta:{delta}, new score:{score}", userId, delta, newScore);
+        return user with { Score = newScore };
+    }
+
+    public async Task<float> GetUserScore(string userId)
+    {
+        User? user = await GetUserById(userId);
+        if (user is null)
+        {
+            _logger.LogInformation("User:{id} was not found.", userId);
+            throw new NotFoundException("User not found.");
+        }
+
+        return user.Score;
     }
 
     private bool IsValidEmail(string email)
@@ -343,36 +430,5 @@ public class UsersServiceImplementation(
         ]);
 
         return collection;
-    }
-
-    public async Task<User> UpdateScore(string userId, float delta)
-    {
-        var users = await _users;
-
-        User? user = await GetUserById(userId);
-        if (user is null)
-        {
-            _logger.LogInformation("User:{id} was not found.", userId);
-            throw new NotFoundException("User not found.");
-        }
-
-        float newScore = user.Score + delta;
-
-        await users.UpdateByIdAsync(userId, u => u.Score, newScore);
-
-        _logger.LogInformation("User:{uId} score updated by delta:{delta}, new score:{score}", userId, delta, newScore);
-        return user with { Score = newScore };
-    }
-
-    public async Task<float> GetUserScore(string userId)
-    {
-        User? user = await GetUserById(userId);
-        if (user is null)
-        {
-            _logger.LogInformation("User:{id} was not found.", userId);
-            throw new NotFoundException("User not found.");
-        }
-
-        return user.Score;
     }
 }
