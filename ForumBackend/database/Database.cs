@@ -10,9 +10,9 @@ public class Database(IMongoDatabase mongoDatabase) : IDatabase
 
     public IDatabaseCollection<T> GetCollection<T>() where T : DatabaseModel
     {
-        if (_cache.TryGetValue(typeof(T), out var chaced))
+        if (_cache.TryGetValue(typeof(T), out var cached))
         {
-            return (IDatabaseCollection<T>)chaced;
+            return (IDatabaseCollection<T>)cached;
         }
 
         var attr = typeof(T).GetCustomAttribute<CollectionNameAttribute>();
