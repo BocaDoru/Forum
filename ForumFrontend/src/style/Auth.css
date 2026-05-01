@@ -1,0 +1,103 @@
+.pageContainer {
+    min-height: 100vh;
+    background-color: #e0e0e0;
+    font-family: sans-serif;
+}
+
+.header {
+    background-color: #ffffff;
+    padding: 10px 20px;
+    border-bottom: 2px solid #2196f3;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    margin: 0;
+    font-size: 24px;
+    color: #000000;
+}
+
+.card {
+    background-color: #ffffff;
+    border-radius: 8px;
+    padding: 30px;
+    width: 400px;
+    margin: 100px auto;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+
+.title {
+    margin-top: 0;
+    margin-bottom: 20px;
+    font-size: 20px;
+    color: #333;
+}
+
+.form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.inputGroup {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.label {
+    font-size: 14px;
+    font-weight: bold;
+    color: #333;
+}
+
+.input {
+    padding: 10px;
+    border-radius: 6px;
+    border: none;
+    background-color: #f0f0f0;
+    outline: none;
+    font-size: 14px;
+}
+
+.buttonContainer {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 10px;
+}
+
+.submitButton {
+    background-color: #ff9800;
+    color: #ffffff;
+    border: none;
+    border-radius: 6px;
+    padding: 10px 20px;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.errorText {
+    color: red;
+    font-size: 14px;
+    margin-bottom: 10px;
+}
+
+.redirectContainer {
+    margin-top: 20px;
+    text-align: center;
+    font-size: 14px;
+    color: #555;
+}
+
+.redirectLink {
+    color: #ff9800;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.redirectLink:hover {
+    text-decoration: underline;
+}
