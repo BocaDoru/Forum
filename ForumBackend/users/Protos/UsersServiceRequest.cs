@@ -13,6 +13,26 @@ public partial class UserEmailRequest : IRequestBase
     public string? Validate() => string.IsNullOrEmpty(Email) ? "User Email can not be empty." : null;
 }
 
+public partial class UsernameRequest : IRequestBase
+{
+    public string? Validate()
+    {
+        if (string.IsNullOrEmpty(UserId) || string.IsNullOrEmpty(Username))
+            return "Username can not be empty.";
+        return null;
+    }
+}
+
+public partial class ChangePasswordRequest : IRequestBase
+{
+    public string? Validate()
+    {
+        if (string.IsNullOrEmpty(UserId) || string.IsNullOrEmpty(OldPassword) || string.IsNullOrEmpty(NewPassword))
+            return "Old password and new password can not be empty.";
+        return null;
+    }
+}
+
 public partial class RegisterRequest : IRequestBase
 {
     public string? Validate()

@@ -10,12 +10,19 @@ service usersService
 {
 	rpc GetUserById (UserIdRequest) returns (commons.protos.MessageResponse);
 	rpc GetUserByEmail (UserEmailRequest) returns (commons.protos.MessageResponse);
+
 	rpc RegisterUser (RegisterRequest) returns (commons.protos.MessageResponse);
 	rpc AuthUser (AuthRequest) returns (commons.protos.MessageResponse);
+
 	rpc BanUser (BanRequest) returns (commons.protos.MessageResponse);
 	rpc UnbanUser (UnbanRequest) returns (commons.protos.MessageResponse);
+
 	rpc UpdateUserScore (UpdateUserScoreRequest) returns (commons.protos.MessageResponse);
 	rpc GetUserScore (UserIdRequest) returns (commons.protos.MessageResponse);
+
+	rpc UpdateUsername(UsernameRequest) returns (commons.protos.MessageResponse);
+	rpc DeleteUser(UserIdRequest) returns (commons.protos.MessageResponse);
+	rpc ChangePassword(ChangePasswordRequest) returns (commons.protos.MessageResponse);
 }
 
 message UserIdRequest
@@ -26,6 +33,19 @@ message UserIdRequest
 message UserEmailRequest
 {
     string email = 1;
+}
+
+message UsernameRequest
+{
+	string userId = 1;
+	string username = 2;
+}
+
+message ChangePasswordRequest
+{
+    string userId = 1;
+	string oldPassword = 2;
+	string newPassword = 3;
 }
 
 message RegisterRequest
