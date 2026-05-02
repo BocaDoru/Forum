@@ -23,6 +23,17 @@ builder.WebHost.ConfigureKestrel(options =>
     });
 });
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowReactApp",
+        policy =>
+        {
+            policy.WithOrigins("http://localhost:5173")
+                  .AllowAnyHeader()
+                  .AllowAnyMethod();
+        });
+});
+
 builder.Services.AddGrpcClient<usersService.usersServiceClient>(o =>
 {
     string? address = builder.Configuration["GrpcServices:UsersService"];
@@ -57,6 +68,8 @@ builder.Services.AddAuthorizationBuilder()
 builder.Services.AddFastEndpoints();
 
 var app = builder.Build();
+
+app.UseCors("AllowReactApp");
 
 app.UseAuthentication();
 app.UseAuthorization();
