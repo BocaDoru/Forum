@@ -50,6 +50,11 @@ public partial class QuestionIdRequest : IRequestBase
     public string? Validate() => string.IsNullOrEmpty(QuestionId) ? "Question ID is missing from request." : null;
 }
 
+public partial class GetQuestionVoteRequest : IRequestBase
+{
+    public string? Validate() => string.IsNullOrEmpty(QuestionId) ? "Question ID is missing from request." : null;
+}
+
 public partial class QuestionsRequest : IRequestBase
 {
     public string? Validate()

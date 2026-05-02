@@ -124,13 +124,13 @@ public class QuestionsFlowTest : ITestFlow
 
         await test.Step("Get questions by Title", async () =>
         {
-            var res = await test.GetAsync("api/questions/title/page=1", updatedTitle);
+            var res = await test.GetAsync($"api/questions/title={updatedTitle}/page=1");
             test.Assert(res.Code == 200, "Expected HTTP 200 for fetching questions by title.", res.Json.ToString());
         });
 
         await test.Step("Get questions by Tag", async () =>
         {
-            var res = await test.GetAsync("api/questions/tag/page=1", tagName);
+            var res = await test.GetAsync($"api/questions/tag={tagName}/page=1");
             test.Assert(res.Code == 200, "Expected HTTP 200 for fetching questions by tag.", res.Json.ToString());
         });
 

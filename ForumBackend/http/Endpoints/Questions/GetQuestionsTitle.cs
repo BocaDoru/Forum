@@ -1,22 +1,25 @@
 ﻿using commons.Protos;
+using FastEndpoints;
 using http.Auth;
 using questionsServiceClient;
 
 namespace http.Endpoints.Questions;
 
-public class GetQuestionsByTitle(ILogger<GetQuestionsByTitle> logger) : ForumEndpoint<string>(logger)
+public class GetQuestionsByTitle(ILogger<GetQuestionsByTitle> logger) : ForumEndpoint(logger)
 {
     public questionsService.questionsServiceClient Client { get; set; } = default!;
 
     public override void Configure()
     {
-        Get("api/questions/title/page={page}");
+        Get("api/questions/title={title}/page={page}");
         Policies(ForumPolicy.AuthenticatedUser);
     }
 
-    public override async Task HandleAsync(string req, CancellationToken cancellationToken)
+    public override async Task HandleAsync(EmptyRequest req, CancellationToken cancellationToken)
     {
-        if (string.IsNullOrEmpty(req))
+        var title = Route<string>("title");
+
+        if (string.IsNullOrEmpty(title))
         {
             await HandleErrorsAsync(400, "Title can not be empty.", cancellationToken);
             return;
@@ -26,7 +29,7 @@ public class GetQuestionsByTitle(ILogger<GetQuestionsByTitle> logger) : ForumEnd
 
         var grpcReq = new QuestionsByTitleRequest
         {
-            Title = req,
+            Title = title,
             Pagination = new QuestionsRequest
             {
                 Skip = (page - 1) * 20,
