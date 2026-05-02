@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { registerUser } from "../services/authService";
 import "../style/Auth.css";
+import Header from "../components/Header";
 
 export default function Register() {
   const [username, setUsername] = useState("");
@@ -37,11 +38,8 @@ export default function Register() {
 
   return (
     <div className="pageContainer">
-      <header className="header">
-        <h1 className="logo">
-          F<span style={{ color: "#ff9800" }}>&</span>rum
-        </h1>
-      </header>
+
+      <Header />
 
       <div className="card">
         <h2 className="title">Create an Account</h2>

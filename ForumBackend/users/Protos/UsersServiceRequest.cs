@@ -84,3 +84,7 @@ public partial class UpdateUserScoreRequest : IRequestBase
     public string? Validate() => string.IsNullOrEmpty(UserId) ? "User ID is missing." : null;
 }
 
+public partial class EmptyUsersRequest : IRequestBase
+{
+    public string? Validate() => null;
+}

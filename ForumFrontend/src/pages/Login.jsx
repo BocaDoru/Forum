@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link, useNavigate } from 'react-router-dom';
 import { loginUser } from "../services/authService";
 import "../style/Auth.css";
+import Header from "../components/Header"
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -31,11 +32,7 @@ export default function Login() {
 
   return (
     <div className="pageContainer">
-      <header className="header">
-        <h1 className="logo">
-          F<span style={{ color: "#ff9800" }}>&</span>rum
-        </h1>
-      </header>
+      <Header />
 
       <div className="card">
         <h2 className="title">Login</h2>

@@ -1,0 +1,56 @@
+.logoClickable {
+    cursor: pointer;
+}
+
+.headerNav {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.moderatorBadge {
+    font-size: 13px;
+    color: #ff9800;
+    font-weight: 500;
+}
+
+.headerUsername {
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    color: #333;
+}
+
+.headerUsername:hover {
+    color: #ff9800;
+}
+
+.logoutButton {
+    background-color: #ff9800;
+    color: #ffffff;
+    border: none;
+    border-radius: 6px;
+    padding: 8px 16px;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.logoutButton:hover {
+    background-color: #e68900;
+}
+
+.moderatorPanelLink {
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    color: #ff9800;
+    border: 1px solid #ff9800;
+    padding: 5px 12px;
+    border-radius: 6px;
+}
+
+.moderatorPanelLink:hover {
+    background: #ff9800;
+    color: white;
+}

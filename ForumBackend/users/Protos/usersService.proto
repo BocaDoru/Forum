@@ -23,7 +23,10 @@ service usersService
 	rpc UpdateUsername(UsernameRequest) returns (commons.protos.MessageResponse);
 	rpc DeleteUser(UserIdRequest) returns (commons.protos.MessageResponse);
 	rpc ChangePassword(ChangePasswordRequest) returns (commons.protos.MessageResponse);
+	rpc GetAllUsers (EmptyUsersRequest) returns (commons.protos.MessageResponse);
 }
+
+message EmptyUsersRequest {}
 
 message UserIdRequest
 {
