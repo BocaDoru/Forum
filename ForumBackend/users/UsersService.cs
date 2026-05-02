@@ -30,13 +30,13 @@ public class UsersService(MessageDispatcher dispatcher) : usersService.usersServ
     public override Task<MessageResponse> UpdateUserScore(UpdateUserScoreRequest request, ServerCallContext serverCallContext)
         => _dispatcher.DispatchAsync(request, serverCallContext.CancellationToken);
 
-    public override Task<MessageResponse> GetUserScore(UserIdRequest request, ServerCallContext serverCallContext)
+    public override Task<MessageResponse> GetUserScore(GetUserScoreRequest request, ServerCallContext serverCallContext)
         => _dispatcher.DispatchAsync(request, serverCallContext.CancellationToken);
 
     public override Task<MessageResponse> UpdateUsername(UsernameRequest request, ServerCallContext serverCallContext)
         => _dispatcher.DispatchAsync(request, serverCallContext.CancellationToken);
 
-    public override Task<MessageResponse> DeleteUser(UserIdRequest request, ServerCallContext serverCallContext)
+    public override Task<MessageResponse> DeleteUser(DeleteUserRequest request, ServerCallContext serverCallContext)
         => _dispatcher.DispatchAsync(request, serverCallContext.CancellationToken);
 
     public override Task<MessageResponse> ChangePassword(ChangePasswordRequest request, ServerCallContext serverCallContext)

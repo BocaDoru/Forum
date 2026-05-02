@@ -18,14 +18,24 @@ service usersService
 	rpc UnbanUser (UnbanRequest) returns (commons.protos.MessageResponse);
 
 	rpc UpdateUserScore (UpdateUserScoreRequest) returns (commons.protos.MessageResponse);
-	rpc GetUserScore (UserIdRequest) returns (commons.protos.MessageResponse);
+	rpc GetUserScore (GetUserScoreRequest) returns (commons.protos.MessageResponse);
 
 	rpc UpdateUsername(UsernameRequest) returns (commons.protos.MessageResponse);
-	rpc DeleteUser(UserIdRequest) returns (commons.protos.MessageResponse);
+	rpc DeleteUser(DeleteUserRequest) returns (commons.protos.MessageResponse);
 	rpc ChangePassword(ChangePasswordRequest) returns (commons.protos.MessageResponse);
 }
 
 message UserIdRequest
+{
+    string id = 1;
+}
+
+message GetUserScoreRequest
+{
+    string id = 1;
+}
+
+message DeleteUserRequest
 {
     string id = 1;
 }
