@@ -145,6 +145,12 @@ public class UsersServiceImplementation(
             throw new BadRequestException("User not found.");
         }
 
+        if (!IsValidPassword(newPassword))
+        {
+            _logger.LogInformation("Invalid new password for user id:{id}", userId);
+            throw new BadRequestException("Invalid password.");
+        }
+
         if (!VerifyPassword(oldPassword, user.Password))
         {
             _logger.LogInformation("Incorrect password for user id:{id}", userId);
