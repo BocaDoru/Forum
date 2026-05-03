@@ -42,6 +42,9 @@ public class QuestionsService(MessageDispatcher dispatcher) : questionsService.q
     public override Task<MessageResponse> GetTagByName(TagNameRequest request, ServerCallContext serverCallContext)
        => _dispatcher.DispatchAsync(request, serverCallContext.CancellationToken);
 
-    public override Task<MessageResponse> GetQuestionVoteCount(QuestionIdRequest request, ServerCallContext serverCallContext)
+    public override Task<MessageResponse> GetTagById(TagIdRequest request, ServerCallContext serverCallContext)
+       => _dispatcher.DispatchAsync(request, serverCallContext.CancellationToken);
+
+    public override Task<MessageResponse> GetQuestionVoteCount(GetQuestionVoteRequest request, ServerCallContext serverCallContext)
     => _dispatcher.DispatchAsync(request, serverCallContext.CancellationToken);
 }

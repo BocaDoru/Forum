@@ -13,13 +13,14 @@ public class GetUserById(ILogger<GetUserById> logger) : ForumEndpoint<string>(lo
 
     public override void Configure()
     {
-        Get("api/users/user");
+        Get("api/users/user={id}");
         Policies(ForumPolicy.AuthenticatedUser);
     }
 
     public override async Task HandleAsync(string req, CancellationToken cancellationToken)
     {
-        if (string.IsNullOrEmpty(req))
+        string? id = Route<string>("id");
+        if (string.IsNullOrEmpty(id))
         {
             await HandleErrorsAsync(400, "User ID not found", cancellationToken);
             return;
@@ -27,7 +28,7 @@ public class GetUserById(ILogger<GetUserById> logger) : ForumEndpoint<string>(lo
 
         var grpcReq = new UserIdRequest
         {
-            Id = req
+            Id = id
         };
 
         MessageResponse response = await Client.GetUserByIdAsync(grpcReq, null, null, cancellationToken);

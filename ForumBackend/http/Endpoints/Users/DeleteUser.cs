@@ -16,7 +16,7 @@ public class DeleteUser(ILogger<DeleteUser> logger) : ForumEndpoint(logger)
 
     public override async Task HandleAsync(EmptyRequest req, CancellationToken cancellationToken)
     {
-        var grpcReq = new UserIdRequest
+        var grpcReq = new DeleteUserRequest
         {
             Id = GetUserId()
         };

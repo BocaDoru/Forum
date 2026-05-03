@@ -6,7 +6,8 @@ using imagesServiceClient;
 
 namespace http.Endpoints.Images;
 
-public class UploadImage(ILogger<UploadImage> logger) : ForumEndpoint<IFormFile>(logger)
+public record UploadImageApiRequest(IFormFile Image);
+public class UploadImage(ILogger<UploadImage> logger) : ForumEndpoint<UploadImageApiRequest>(logger)
 {
     public imagesService.imagesServiceClient Client { get; set; } = default!;
 
@@ -14,26 +15,25 @@ public class UploadImage(ILogger<UploadImage> logger) : ForumEndpoint<IFormFile>
     {
         Post("api/images/upload");
         AllowFileUploads();
-
         Policies(ForumPolicy.AuthenticatedUser);
     }
 
-    public override async Task HandleAsync(IFormFile req, CancellationToken cancellationToken)
+    public override async Task HandleAsync(UploadImageApiRequest req, CancellationToken cancellationToken)
     {
-        if (req is null || req.Length == 0)
+        if (req.Image is null || req.Image.Length == 0)
         {
             await HandleErrorsAsync(400, "No file uploaded.", cancellationToken);
             return;
         }
 
         using MemoryStream ms = new();
-        await req.CopyToAsync(ms, cancellationToken);
+        await req.Image.CopyToAsync(ms, cancellationToken);
 
         byte[] bytes = ms.ToArray();
 
         var uploadReq = new UploadRequest
         {
-            FileName = req.FileName,
+            FileName = req.Image.FileName,
             Data = ByteString.CopyFrom(bytes)
         };
 

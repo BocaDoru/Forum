@@ -20,6 +20,7 @@ public interface IQuestionsService
     Task<List<Question>?> GetQuestionsByTagAsync(string tag, int skip, int limit);
     Task<List<Question>?> GetQuestionsAsync(int skip, int limit);
     Task<QuestionTag> CreateTagAsync(string name);
+    Task<QuestionTag?> GetTagByIdAsync(string id);
     Task<QuestionTag?> GetTagByNameAsync(string name);
     Task<int> GetQuestionVoteCountAsync(string questionId);
 }
@@ -208,6 +209,11 @@ public class QuestionsServiceImplementation(
         return await GetQuestionsPaginatedAsync(skip, limit, Builders<Question>.Filter.AnyEq(q => q.TagIds, qTag.Id));
     }
 
+    public async Task<QuestionTag?> GetTagByIdAsync(string id)
+    {
+        var tags = await _tags;
+        return await tags.GetOneByIdAsync(id);
+    }
     public async Task<QuestionTag?> GetTagByNameAsync(string name)
     {
         var tags = await _tags;
