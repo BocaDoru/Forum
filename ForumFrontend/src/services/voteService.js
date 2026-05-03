@@ -16,3 +16,7 @@ export const getVoteCount = async (postId, isQuestion) => {
         method: 'GET',
     });
 };
+
+export const getUserVote = async (postId, isQuestion) => {
+    return apiClient(`/votes/${postId}/${isQuestion}/mine`);
+};

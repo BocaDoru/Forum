@@ -4,6 +4,7 @@ using forum.Models;
 using questionsServiceClient;
 using MongoDB.Driver;
 using usersServiceClient;
+using MongoDB.Bson.IO;
 
 namespace forum.Implementations;
 
@@ -15,6 +16,7 @@ public interface IVotesService
 {
     Task<Vote> CastVote(string userId, string postId, bool isQuestion, bool isDownvote);
     Task<int> GetVoteCount(string postId, bool isQuestion);
+    Task<Vote?> GetUserVote(string userId, string postId, bool isQuestion);
 }
 
 public class VotesServiceImplementation(
@@ -229,6 +231,13 @@ public class VotesServiceImplementation(
         ]);
 
         return collection;
+    }
+
+    public async Task<Vote?> GetUserVote(string userId, string postId, bool isQuestion)
+    {
+        var votes = await _votes;
+        return await votes.GetOneAsync(v =>
+            v.UserId == userId && v.PostId == postId && v.IsQuestion == isQuestion);
     }
 
 }

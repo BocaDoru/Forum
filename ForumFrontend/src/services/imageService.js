@@ -1,4 +1,4 @@
-import { apiClient } from './apiClient';
+import { apiClient, apiFormClient } from './apiClient';
 
 export const getImageUrl = (imageId) => {
     return `${import.meta.env.VITE_API_BASE_URL}/images/${imageId}`;

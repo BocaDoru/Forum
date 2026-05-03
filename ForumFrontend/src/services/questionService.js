@@ -1,4 +1,4 @@
-import { apiClient } from './apiClient';
+import { apiClient, apiFormClient } from './apiClient';
 
 export const getQuestions = async (page) => {
     return apiClient(`/questions/page=${page}`, {
