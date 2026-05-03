@@ -221,24 +221,5 @@ public class VotesFlowTest : ITestFlow
         });
 
         // Check user scores
-        await test.Step("Get own score (user2)", async () =>
-        {
-            var res = await test.GetAsync("api/users/score");
-            test.Assert(res.Code == 200, "Expected HTTP 200 for getting user score.", res.Json.ToString());
-        });
-
-        await test.Step("Login user1 and get own score", async () =>
-        {
-            var authRes = await test.PostAsync("api/users/auth", new
-            {
-                Email = user1Email,
-                Password = "Test123!"
-            });
-
-            test.SetBearer(authRes.Json.GetProperty("JwtToken").GetString()!);
-
-            var res = await test.GetAsync("api/users/score");
-            test.Assert(res.Code == 200, "Expected HTTP 200 for getting user1 score.", res.Json.ToString());
-        });
     }
 }

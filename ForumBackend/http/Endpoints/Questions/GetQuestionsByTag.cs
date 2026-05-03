@@ -1,22 +1,24 @@
 ﻿using commons.Protos;
+using FastEndpoints;
 using http.Auth;
 using questionsServiceClient;
 
 namespace http.Endpoints.Questions;
 
-public class GetQuestionsByTag(ILogger<GetQuestionsByTag> logger) : ForumEndpoint<string>(logger)
+public class GetQuestionsByTag(ILogger<GetQuestionsByTag> logger) : ForumEndpoint(logger)
 {
     public questionsService.questionsServiceClient Client { get; set; } = default!;
 
     public override void Configure()
     {
-        Get("api/questions/tag/page={page}");
+        Get("api/questions/tag={tag}/page={page}");
         Policies(ForumPolicy.AuthenticatedUser);
     }
 
-    public override async Task HandleAsync(string req, CancellationToken cancellationToken)
+    public override async Task HandleAsync(EmptyRequest req, CancellationToken cancellationToken)
     {
-        if (string.IsNullOrEmpty(req))
+        var tag = Route<string>("tag");
+        if (string.IsNullOrEmpty(tag))
         {
             await HandleErrorsAsync(400, "No tag was selected.", cancellationToken);
             return;
@@ -26,7 +28,7 @@ public class GetQuestionsByTag(ILogger<GetQuestionsByTag> logger) : ForumEndpoin
 
         var grpcReq = new QuestionsByTagRequest
         {
-            Tag = req,
+            Tag = tag,
             Pagination = new QuestionsRequest
             {
                 Skip = (page - 1) * 20,

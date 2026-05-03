@@ -5,10 +5,10 @@ using questionsServiceClient;
 public class GetQuestionVoteCountMessage(
     ILogger<GetQuestionVoteCountMessage> logger,
     IQuestionsService questionsService
-) : Message<QuestionIdRequest, int>(logger)
+) : Message<GetQuestionVoteRequest, int>(logger)
 {
     private readonly IQuestionsService _service = questionsService;
 
-    protected override async Task<int> HandleMessage(QuestionIdRequest request, CancellationToken cancellationToken)
+    protected override async Task<int> HandleMessage(GetQuestionVoteRequest request, CancellationToken cancellationToken)
         => await _service.GetQuestionVoteCountAsync(request.QuestionId);
 }

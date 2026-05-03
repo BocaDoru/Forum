@@ -8,6 +8,16 @@ public partial class UserIdRequest : IRequestBase
     public string? Validate() => string.IsNullOrEmpty(Id) ? "User Id can not be empty." : null;
 }
 
+public partial class GetUserScoreRequest : IRequestBase
+{
+    public string? Validate() => string.IsNullOrEmpty(Id) ? "User Id can not be empty." : null;
+}
+
+public partial class DeleteUserRequest : IRequestBase
+{
+    public string? Validate() => string.IsNullOrEmpty(Id) ? "User Id can not be empty." : null;
+}
+
 public partial class UserEmailRequest : IRequestBase
 {
     public string? Validate() => string.IsNullOrEmpty(Email) ? "User Email can not be empty." : null;
