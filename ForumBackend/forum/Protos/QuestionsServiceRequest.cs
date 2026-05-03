@@ -115,3 +115,8 @@ public partial class TagNameRequest : IRequestBase
 {
     public string? Validate() => string.IsNullOrEmpty(Name) ? "Tag can not be empty." : null;
 }
+
+public partial class TagIdRequest : IRequestBase
+{
+    public string? Validate() => string.IsNullOrEmpty(Id) ? "Tag can not be empty." : null;
+}
