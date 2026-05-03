@@ -186,7 +186,7 @@ export default function Home() {
 
         <div className="questionList">
           {questions.map((q, index) => (
-            <div key={index} className="questionCard">
+            <div key={index} className="questionCard" onClick={() => navigate(`/question/${q.Id}`)} style={{ cursor: 'pointer' }}>
               <div className="voteColumn">
                 <button className="voteArrow">▲</button>
                 <span className="voteCount">{q.VoteCount}</span>
