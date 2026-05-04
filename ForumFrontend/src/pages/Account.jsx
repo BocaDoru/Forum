@@ -67,7 +67,7 @@ export default function Account() {
     return (
         <div className="pageContainer">
 
-            <Header />
+            <Header/>
 
             <div className="accountContainer">
                 <div className="card profileCard">
@@ -85,7 +85,8 @@ export default function Account() {
                         <form onSubmit={handleUpdateUsername} className="form">
                             <div className="inputGroup">
                                 <label className="label">New username</label>
-                                <input type="text" value={newUsername} onChange={e => setNewUsername(e.target.value)} className="input" required />
+                                <input type="text" value={newUsername} onChange={e => setNewUsername(e.target.value)}
+                                       className="input" required/>
                             </div>
                             <div className="buttonContainer">
                                 <button type="submit" className="submitButton">Save</button>
@@ -100,11 +101,13 @@ export default function Account() {
                         <form onSubmit={handleChangePassword} className="form">
                             <div className="inputGroup">
                                 <label className="label">Current password</label>
-                                <input type="password" value={oldPassword} onChange={e => setOldPassword(e.target.value)} className="input" required />
+                                <input type="password" value={oldPassword}
+                                       onChange={e => setOldPassword(e.target.value)} className="input" required/>
                             </div>
                             <div className="inputGroup">
                                 <label className="label">New password</label>
-                                <input type="password" value={newPassword} onChange={e => setNewPassword(e.target.value)} className="input" required />
+                                <input type="password" value={newPassword}
+                                       onChange={e => setNewPassword(e.target.value)} className="input" required/>
                             </div>
                             <div className="buttonContainer">
                                 <button type="submit" className="submitButton">Update</button>
@@ -117,6 +120,11 @@ export default function Account() {
                         <p className="dangerDescription">Once you delete your account, there is no going back.</p>
                         <button onClick={handleDeleteUser} className="deleteButton">Delete account</button>
                     </div>
+                </div>
+                <div className="bottomActions">
+                    <button onClick={() => navigate(-1)} className="backButton">
+                        Back
+                    </button>
                 </div>
             </div>
         </div>

@@ -1,18 +1,7 @@
-import { apiClient, apiFormClient  } from './apiClient';
+import {apiClient} from './apiClient';
 
-export const getCommentsForQuestion = async (questionId) => {
-    return apiClient(`/comments/question/${questionId}`, {
-        method: 'GET',
-    });
-};
-
-export const createComment = async (questionId, text, image) => {
-    const formData = new FormData();
-    formData.append('QuestionId', questionId);
-    formData.append('Text', text);
-    if (image) formData.append('Image', image);
-
-    return apiFormClient('/comments/create', formData);
+export const getCommentsByQuestionId = async (questionId) => {
+    return apiClient(`/comments/question/${questionId}`);
 };
 
 export const editComment = async (commentId, text, imageId) => {
@@ -31,3 +20,4 @@ export const deleteComment = async (commentId) => {
         method: 'DELETE',
     });
 };
+

@@ -50,6 +50,11 @@ public partial class QuestionIdRequest : IRequestBase
     public string? Validate() => string.IsNullOrEmpty(QuestionId) ? "Question ID is missing from request." : null;
 }
 
+public partial class GetQuestionVoteRequest : IRequestBase
+{
+    public string? Validate() => string.IsNullOrEmpty(QuestionId) ? "Question ID is missing from request." : null;
+}
+
 public partial class QuestionsRequest : IRequestBase
 {
     public string? Validate()
@@ -109,4 +114,9 @@ public partial class CreateTagRequest : IRequestBase
 public partial class TagNameRequest : IRequestBase
 {
     public string? Validate() => string.IsNullOrEmpty(Name) ? "Tag can not be empty." : null;
+}
+
+public partial class TagIdRequest : IRequestBase
+{
+    public string? Validate() => string.IsNullOrEmpty(Id) ? "Tag can not be empty." : null;
 }

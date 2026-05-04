@@ -1,4 +1,12 @@
-import { apiClient } from './apiClient'
+import { apiClient } from './apiClient';
+
+export const getUserById = async (userId) => {
+    return apiClient(`/users/user=${userId}`);
+};
+
+export const getUserByEmail = async (email) => {
+    return apiClient(`/users/email=${email}`);
+};
 
 export const updateUsername = async (username) => {
     return apiClient('/users', {
@@ -29,18 +37,6 @@ export const getUserScore = async () => {
     });
 };
 
-export const getUserByEmail = async (email) => {
-    return apiClient(`/users/email=${email}`, {
-        method: 'GET',
-    });
-};
-
-export const getUserById = async () => {
-    return apiClient('/users/user', {
-        method: 'GET',
-    });
-};
-
 export const getAllUsers = async () => {
     return apiClient('/users/all');
 };
@@ -50,7 +46,7 @@ export const banUser = async (userId, reason) => {
         method: 'POST',
         body: {
             UserId: userId,
-            Reason: reason 
+            Reason: reason
         },
     });
 };

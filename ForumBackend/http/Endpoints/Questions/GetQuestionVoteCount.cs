@@ -23,7 +23,7 @@ public class GetQuestionVoteCount(ILogger<GetQuestionVoteCount> logger) : ForumE
             return;
         }
 
-        var grpcReq = new QuestionIdRequest { QuestionId = questionId };
+        var grpcReq = new GetQuestionVoteRequest { QuestionId = questionId };
         MessageResponse response = await Client.GetQuestionVoteCountAsync(grpcReq, null, null, cancellationToken);
         await SendAsync(response, cancellationToken: cancellationToken);
     }

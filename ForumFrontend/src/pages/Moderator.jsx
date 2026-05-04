@@ -3,12 +3,14 @@ import { getAllUsers, banUser, unbanUser } from "../services/userService";
 import Header from "../components/Header";
 import "../style/Auth.css";
 import "../style/Moderator.css";
+import { useNavigate } from "react-router-dom";
 
 export default function Moderator() {
     const [users, setUsers] = useState([]);
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(true);
     const [search, setSearch] = useState("");
+    const navigate = useNavigate();
 
     useEffect(() => {
         getAllUsers()
@@ -59,43 +61,49 @@ export default function Moderator() {
                 ) : (
                     <table className="usersTable">
                         <thead>
-                            <tr>
-                                <th>Username</th>
-                                <th>Role</th>
-                                <th>Status</th>
-                                <th>Actions</th>
-                            </tr>
+                        <tr>
+                            <th>Username</th>
+                            <th>Role</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
                         </thead>
                         <tbody>
-                            {filteredUsers.map(u => (
-                                <tr key={u.Id}>
-                                    <td>{u.Username}</td>
-                                    <td>
+                        {filteredUsers.map(u => (
+                            <tr key={u.Id}>
+                                <td>{u.Username}</td>
+                                <td>
                                         <span className={`roleBadge ${u.IsModerator ? "roleModerator" : "roleUser"}`}>
                                             {u.IsModerator ? "Moderator" : "User"}
                                         </span>
-                                    </td>
-                                    <td>
+                                </td>
+                                <td>
                                         <span className={`statusBadge ${u.IsBanned ? "statusBanned" : "statusActive"}`}>
                                             {u.IsBanned ? "Banned" : "Active"}
                                         </span>
-                                    </td>
-                                    <td>
-                                        {u.IsBanned ? (
-                                            <button className="unbanButton" onClick={() => handleUnban(u.Id)}>Unban</button>
-                                        ) : (
-                                            <button className="banButton" onClick={() => {
-                                                const reason = window.prompt("Ban reason (optional):");
-                                                handleBan(u.Id, reason);
-                                            }}>Ban</button>
-                                        )}
-                                    </td>
-                                </tr>
-                            ))}
+                                </td>
+                                <td>
+                                    {u.IsBanned ? (
+                                        <button className="unbanButton" onClick={() => handleUnban(u.Id)}>Unban</button>
+                                    ) : (
+                                        <button className="banButton" onClick={() => {
+                                            const reason = window.prompt("Ban reason (optional):");
+                                            handleBan(u.Id, reason);
+                                        }}>Ban</button>
+                                    )}
+                                </td>
+                            </tr>
+                        ))}
                         </tbody>
                     </table>
                 )}
+                <div className="bottomActions">
+                    <button onClick={() => navigate(-1)} className="backButton">
+                        Back
+                    </button>
+                </div>
             </div>
+
         </div>
     );
 }

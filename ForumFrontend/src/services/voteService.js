@@ -7,7 +7,7 @@ export const castVote = async (postId, isQuestion, isDownvote) => {
             PostId: postId,
             IsQuestion: isQuestion,
             IsDownvote: isDownvote
-        },
+        }
     });
 };
 

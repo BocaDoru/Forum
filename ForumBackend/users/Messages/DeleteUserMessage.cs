@@ -8,10 +8,10 @@ namespace users.Messages;
 public class DeleteUserMessage(
     ILogger<DeleteUserMessage> logger,
     IUsersService userService
-) : Message<UserIdRequest>(logger)
+) : Message<DeleteUserRequest>(logger)
 {
     private readonly IUsersService _service = userService;
 
-    protected override async Task HandleMessage(UserIdRequest request, CancellationToken cancellationToken)
+    protected override async Task HandleMessage(DeleteUserRequest request, CancellationToken cancellationToken)
         => await _service.DeleteUserAsync(request.Id);
 }
