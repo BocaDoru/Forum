@@ -63,6 +63,7 @@ export default function Moderator() {
                         <thead>
                         <tr>
                             <th>Username</th>
+                            <th>Email</th>
                             <th>Role</th>
                             <th>Status</th>
                             <th>Actions</th>
@@ -72,6 +73,7 @@ export default function Moderator() {
                         {filteredUsers.map(u => (
                             <tr key={u.Id}>
                                 <td>{u.Username}</td>
+                                <td>{u.Email}</td>
                                 <td>
                                         <span className={`roleBadge ${u.IsModerator ? "roleModerator" : "roleUser"}`}>
                                             {u.IsModerator ? "Moderator" : "User"}
