@@ -2,12 +2,14 @@ import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { 
     getQuestionById, 
-    getVoteCount,
     deleteQuestion
 } from '../services/questionService.js';
 import { getUserById } from "../services/userService";
 import { getCommentsByQuestionId } from "../services/commentService";
-import { castVote } from "../services/voteService.js"
+import { 
+  castVote, 
+  getVoteCount 
+} from "../services/voteService.js"
 import { fetchImageBlob } from "../services/imageService";
 import "../style/QuestionDetail.css";
 import Header from "../components/Header.jsx";
@@ -251,8 +253,15 @@ export default function QuestionDetail() {
         </div>
 
         <div className="writeCommentCard">
-          <h4 className="writeCommentTitle">Write a comment</h4>
+          <label 
+            htmlFor="commentInput" 
+            className="writeCommentTitle" 
+            style={{ display: 'block' }}
+          >
+            Write a comment
+          </label>
           <textarea
+            id="commentInput"
             className="commentInput"
             placeholder="Share your answer..."
             value={commentText}
@@ -262,12 +271,6 @@ export default function QuestionDetail() {
             <span className="attachIcon">📎</span>
             <button className="postCommentButton">Post Comment</button>
           </div>
-        </div>
-
-        <div className="bottomActions">
-          <button onClick={() => navigate(-1)} className="backButton">
-            Back
-          </button>
         </div>
       </main>
     </div>
