@@ -2,14 +2,15 @@ import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { 
     getQuestionById, 
-    getVoteCount, 
-    castVote, 
+    getVoteCount,
     deleteQuestion
-} from '../services/forumService';
+} from '../services/questionService.js';
 import { getUserById } from "../services/userService";
 import { getCommentsByQuestionId } from "../services/commentService";
+import { castVote } from "../services/voteService.js"
 import { fetchImageBlob } from "../services/imageService";
 import "../style/QuestionDetail.css";
+import Header from "../components/Header.jsx";
 
 export default function QuestionDetail() {
   const { id } = useParams();
@@ -40,7 +41,7 @@ export default function QuestionDetail() {
 
         const [authorData, initialQuestionVotes, loadedImageSrc] =
           await Promise.all([
-            getUserById(qData.AuthorId).catch(() => ({
+            getUserById(qData.AuthorId).then(data => data || { Username: "Unknown", Score: 0 }).catch(() => ({
               Username: "Unknown",
               Score: 0,
             })),
@@ -141,20 +142,7 @@ export default function QuestionDetail() {
 
   return (
     <div className="pageContainer">
-      <header className="header">
-        <h1 className="logo">
-          F<span style={{ color: "#ff9800" }}>&</span>rum
-        </h1>
-        <button
-          onClick={() => {
-            localStorage.clear();
-            navigate("/login");
-          }}
-          className="logoutButton"
-        >
-          LogOut
-        </button>
-      </header>
+      <Header />
 
       <main className="detailMainContent">
         <div className="questionCard detailCard">

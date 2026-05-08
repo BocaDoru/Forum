@@ -31,7 +31,7 @@ export const getTagById = async (tagId) => {
 export const createTag = async (tagName) => {
     return apiClient('/questions/tag', {
         method: 'POST',
-        body: tagName, 
+        body: tagName,
         headers: { 'Content-Type': 'application/json' }
     });
 };
@@ -40,7 +40,7 @@ export const askQuestion = async (title, text, imageFile, tagIds) => {
     const formData = new FormData();
     formData.append('Title', title);
     formData.append('Text', text);
-    
+
     tagIds.forEach(id => {
         formData.append('TagIds', id);
     });
@@ -63,20 +63,9 @@ export const getVoteCount = async (postId, isQuestion) => {
     return apiClient(`/votes/${postId}/${isQuestion}`);
 };
 
-export const castVote = async (postId, isQuestion, isDownvote) => {
-    return apiClient('/votes/cast', {
-        method: 'POST',
-        body: {
-            PostId: postId,
-            IsQuestion: isQuestion,
-            IsDownvote: isDownvote
-        }
-    });
-};
-
 export const deleteQuestion = async (questionId) => {
-    return apiClient(`/questions/${questionId}`, { 
-        method: 'DELETE' 
+    return apiClient(`/questions/${questionId}`, {
+        method: 'DELETE'
     });
 };
 

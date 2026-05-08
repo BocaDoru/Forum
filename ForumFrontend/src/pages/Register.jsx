@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { registerUser } from "../services/authService";
 import "../style/Auth.css";
+import Header from "../components/Header";
 
 export default function Register() {
   const [username, setUsername] = useState("");
@@ -19,14 +20,14 @@ export default function Register() {
     setIsLoading(true);
 
     try {
-      const data = await registerUser(username, email, password);
+      const data = await registerUser(username, email, password, isModerator);
 
       const token = data.JwtToken;
       const user = data.User;
 
       localStorage.setItem("forum_token", token);
       localStorage.setItem("forum_user", JSON.stringify(user));
-
+      navigate("/home");
       console.log(`Registration successful! Welcome ${user.Username}`);
     } catch (err) {
       setError(err.message);
@@ -37,11 +38,8 @@ export default function Register() {
 
   return (
     <div className="pageContainer">
-      <header className="header">
-        <h1 className="logo">
-          F<span style={{ color: "#ff9800" }}>&</span>rum
-        </h1>
-      </header>
+
+      <Header />
 
       <div className="card">
         <h2 className="title">Create an Account</h2>

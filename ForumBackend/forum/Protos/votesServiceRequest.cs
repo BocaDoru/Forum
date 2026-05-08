@@ -20,3 +20,13 @@ public partial class GetVoteCountRequest : IRequestBase
         return null;
     }
 }
+
+public partial class GetUserVoteRequest : IRequestBase
+{
+    public string? Validate()
+    {
+        if (string.IsNullOrEmpty(PostId)) return "PostId cannot be empty.";
+        if (string.IsNullOrEmpty(UserId)) return "UserId cannot be empty.";
+        return null;
+    }
+}
