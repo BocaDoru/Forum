@@ -7,9 +7,10 @@ import {
     askQuestion, 
     getQuestionById, 
     editQuestion 
-} from '../services/forumService';
+} from '../services/questionService.js';
 import { fetchImageBlob, uploadImage } from '../services/imageService';
 import '../style/AskQuestion.css';
+import Header from "../components/Header.jsx";
 
 export default function AskQuestion() {
     const { id } = useParams(); 
@@ -152,10 +153,7 @@ export default function AskQuestion() {
 
     return (
         <div className="pageContainer">
-            <header className="header">
-                <h1 className="logo">F<span style={{ color: '#ff9800' }}>&</span>rum</h1>
-                <button onClick={() => { localStorage.clear(); navigate('/login'); }} className="logoutButton">LogOut</button>
-            </header>
+            <Header />
 
             <main className="askMainContent">
                 <h2 className="pageTitle">{isEditMode ? 'Edit Question' : 'Ask a Question'}</h2>

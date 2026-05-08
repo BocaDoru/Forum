@@ -6,11 +6,12 @@ import {
   getQuestionsByTitle,
   getQuestionsByTag,
   getQuestionsByAuthor,
-} from "../services/forumService";
+} from "../services/questionService.js";
 
 import { getUserById, getUserByEmail } from "../services/userService";
 
 import "../style/Home.css";
+import Header from "../components/Header.jsx";
 
 export default function Home() {
   const [questions, setQuestions] = useState([]);
@@ -26,8 +27,8 @@ export default function Home() {
     const questionsWithAuthors = await Promise.all(
       rawQuestions.map(async (q) => {
         try {
-          const authorData = await getUserById(q.AuthorId);
-          return { ...q, AuthorInfo: authorData };
+          const authorData = await getUserById(q.AuthorId).catch(() => null);
+          return { ...q, AuthorInfo: authorData || { Username: "Unknown", Score: 0 } };
         } catch (err) {
           return { ...q, AuthorInfo: { Username: "Unknown", Score: 0 } };
         }
@@ -127,14 +128,7 @@ export default function Home() {
 
   return (
     <div className="homeContainer">
-      <header className="navbar">
-        <h1 className="logo">
-          F<span style={{ color: "#ff9800" }}>&</span>rum
-        </h1>
-        <button onClick={handleLogout} className="logoutButton">
-          LogOut
-        </button>
-      </header>
+      <Header />
 
       <main className="mainContent">
         <div className="topActions">

@@ -9,6 +9,7 @@ package votesService;
 service votesService {
   rpc CastVote (CastVoteRequest) returns (commons.protos.MessageResponse);
   rpc GetVoteCount (GetVoteCountRequest) returns (commons.protos.MessageResponse);
+  rpc GetUserVote (GetUserVoteRequest) returns (commons.protos.MessageResponse);
 }
 
 message CastVoteRequest {
@@ -21,4 +22,10 @@ message CastVoteRequest {
 message GetVoteCountRequest {
   string postId = 1;
   bool isQuestion = 2;
+}
+
+message GetUserVoteRequest {
+  string postId = 1;
+  bool isQuestion = 2;
+  string userId = 3;
 }
