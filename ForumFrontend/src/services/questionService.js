@@ -59,10 +59,6 @@ export const getQuestionById = async (questionId) => {
     return apiClient(`/questions/${questionId}`);
 };
 
-export const getVoteCount = async (postId, isQuestion) => {
-    return apiClient(`/votes/${postId}/${isQuestion}`);
-};
-
 export const deleteQuestion = async (questionId) => {
     return apiClient(`/questions/${questionId}`, {
         method: 'DELETE'
