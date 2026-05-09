@@ -19,7 +19,7 @@ export default function Register() {
     setIsLoading(true);
 
     try {
-      const data = await registerUser(username, email, password);
+      const data = await registerUser(username, email, password, isModerator);
 
       const token = data.JwtToken;
       const user = data.User;

@@ -14,7 +14,7 @@ services:
       - http
 
   mongo:
-      image: mongo:7.0
+      image: mongo:latest
       restart: always
       platform: linux/amd64
       command: ["mongod", "--quiet", "--logpath", "/dev/null"]
