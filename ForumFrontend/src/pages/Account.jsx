@@ -84,8 +84,8 @@ export default function Account() {
                         {usernameSuccess && <div className="successText">{usernameSuccess}</div>}
                         <form onSubmit={handleUpdateUsername} className="form">
                             <div className="inputGroup">
-                                <label className="label">New username</label>
-                                <input type="text" value={newUsername} onChange={e => setNewUsername(e.target.value)}
+                                <label className="label" htmlFor="newUsernameInput">New username</label>
+                                <input id="newUsernameInput" type="text" value={newUsername} onChange={e => setNewUsername(e.target.value)}
                                        className="input" required/>
                             </div>
                             <div className="buttonContainer">
@@ -100,13 +100,13 @@ export default function Account() {
                         {passwordSuccess && <div className="successText">{passwordSuccess}</div>}
                         <form onSubmit={handleChangePassword} className="form">
                             <div className="inputGroup">
-                                <label className="label">Current password</label>
-                                <input type="password" value={oldPassword}
+                                <label className="label" htmlFor="oldPasswordInput">Current password</label>
+                                <input id="oldPasswordInput" type="password" value={oldPassword}
                                        onChange={e => setOldPassword(e.target.value)} className="input" required/>
                             </div>
                             <div className="inputGroup">
-                                <label className="label">New password</label>
-                                <input type="password" value={newPassword}
+                                <label className="label" htmlFor="newPasswordInput">New password</label>
+                                <input id="newPasswordInput" type="password" value={newPassword}
                                        onChange={e => setNewPassword(e.target.value)} className="input" required/>
                             </div>
                             <div className="buttonContainer">
