@@ -82,7 +82,8 @@ public abstract class ForumEndpointBase<TReq>(ILogger logger) : Endpoint<TReq, J
                 return;
             case 403:
                 logger.LogDebug("403: {error}", err);
-                await Send.ForbiddenAsync(cancellationToken);
+                AddError(err ?? "Forbidden", ((HttpStatusCode)403).ToString());
+                await Send.ErrorsAsync(403, cancellationToken);
                 return;
             case 404:
                 logger.LogDebug("404: {error}", err);
