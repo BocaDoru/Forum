@@ -14,4 +14,7 @@ public class VotesService(MessageDispatcher dispatcher) : votesService.votesServ
 
     public override Task<MessageResponse> GetVoteCount(GetVoteCountRequest request, ServerCallContext serverCallContext)
         => _dispatcher.DispatchAsync(request, serverCallContext.CancellationToken);
+
+    public override Task<MessageResponse> GetUserVote(GetUserVoteRequest request, ServerCallContext serverCallContext)
+        => _dispatcher.DispatchAsync(request, serverCallContext.CancellationToken);
 }

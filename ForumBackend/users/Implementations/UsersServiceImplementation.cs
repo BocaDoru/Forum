@@ -31,6 +31,7 @@ public interface IUsersService
     public Task<User> UpdateScore(string userId, float delta);
 
     public Task<float> GetUserScore(string userId);
+    Task<List<User>> GetAllUsersAsync();
 }
 public class UsersServiceImplementation(
     ILogger<UsersServiceImplementation> logger,
@@ -144,13 +145,19 @@ public class UsersServiceImplementation(
             throw new BadRequestException("User not found.");
         }
 
+        if (!IsValidPassword(newPassword))
+        {
+            _logger.LogInformation("Invalid new password for user id:{id}", userId);
+            throw new BadRequestException("Invalid password.");
+        }
+
         if (!VerifyPassword(oldPassword, user.Password))
         {
             _logger.LogInformation("Incorrect password for user id:{id}", userId);
             throw new BadRequestException("Invalid email or password.");
         }
 
-        user.Password = newPassword;
+        user.Password = HashPassword(newPassword);
 
         var users = await _users;
         await users.ReplaceAsync(user);
@@ -430,5 +437,11 @@ public class UsersServiceImplementation(
         ]);
 
         return collection;
+    }
+
+    public async Task<List<User>> GetAllUsersAsync()
+    {
+        var users = await _users;
+        return await users.MongoCollection.Find(_ => true).ToListAsync();
     }
 }

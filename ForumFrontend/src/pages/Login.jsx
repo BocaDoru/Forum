@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link, useNavigate } from 'react-router-dom';
 import { loginUser } from "../services/authService";
 import "../style/Auth.css";
+import Header from "../components/Header"
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -31,11 +32,7 @@ export default function Login() {
 
   return (
     <div className="pageContainer">
-      <header className="header">
-        <h1 className="logo">
-          F<span style={{ color: "#ff9800" }}>&</span>rum
-        </h1>
-      </header>
+      <Header />
 
       <div className="card">
         <h2 className="title">Login</h2>
@@ -44,8 +41,9 @@ export default function Login() {
 
         <form onSubmit={handleSubmit} className="form">
           <div className="inputGroup">
-            <label className="label">Email</label>
+            <label className="label" htmlFor="emailInput">Email</label>
             <input
+              id="emailInput"
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
@@ -55,8 +53,9 @@ export default function Login() {
           </div>
 
           <div className="inputGroup">
-            <label className="label">Password</label>
+            <label className="label" htmlFor="passwordInput">Password</label>
             <input
+              id="passwordInput"
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}

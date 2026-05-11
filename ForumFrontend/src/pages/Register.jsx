@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { registerUser } from "../services/authService";
 import "../style/Auth.css";
+import Header from "../components/Header";
 
 export default function Register() {
   const [username, setUsername] = useState("");
@@ -26,7 +27,7 @@ export default function Register() {
 
       localStorage.setItem("forum_token", token);
       localStorage.setItem("forum_user", JSON.stringify(user));
-
+      navigate("/home");
       console.log(`Registration successful! Welcome ${user.Username}`);
     } catch (err) {
       setError(err.message);
@@ -37,11 +38,7 @@ export default function Register() {
 
   return (
     <div className="pageContainer">
-      <header className="header">
-        <h1 className="logo">
-          F<span style={{ color: "#ff9800" }}>&</span>rum
-        </h1>
-      </header>
+      <Header />
 
       <div className="card">
         <h2 className="title">Create an Account</h2>
@@ -50,8 +47,11 @@ export default function Register() {
 
         <form onSubmit={handleSubmit} className="form">
           <div className="inputGroup">
-            <label className="label">Username</label>
+            <label className="label" htmlFor="usernameInput">
+              Username
+            </label>
             <input
+              id="usernameInput"
               type="text"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
@@ -61,8 +61,11 @@ export default function Register() {
           </div>
 
           <div className="inputGroup">
-            <label className="label">Email</label>
+            <label className="label" htmlFor="emailInput">
+              Email
+            </label>
             <input
+              id="emailInput"
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
@@ -72,8 +75,11 @@ export default function Register() {
           </div>
 
           <div className="inputGroup">
-            <label className="label">Password</label>
+            <label className="label" htmlFor="passwordInput">
+              Password
+            </label>
             <input
+              id="passwordInput"
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
@@ -91,8 +97,10 @@ export default function Register() {
                 fontSize: "14px",
                 cursor: "pointer",
               }}
+              htmlFor="moderatorCheckbox"
             >
               <input
+                id="moderatorCheckbox"
                 type="checkbox"
                 checked={isModerator}
                 onChange={(e) => setIsModerator(e.target.checked)}

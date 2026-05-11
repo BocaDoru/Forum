@@ -41,4 +41,7 @@ public class UsersService(MessageDispatcher dispatcher) : usersService.usersServ
 
     public override Task<MessageResponse> ChangePassword(ChangePasswordRequest request, ServerCallContext serverCallContext)
         => _dispatcher.DispatchAsync(request, serverCallContext.CancellationToken);
+
+    public override Task<MessageResponse> GetAllUsers(EmptyUsersRequest request, ServerCallContext serverCallContext)
+        => _dispatcher.DispatchAsync(request, serverCallContext.CancellationToken);
 }

@@ -7,9 +7,10 @@ import {
     askQuestion, 
     getQuestionById, 
     editQuestion 
-} from '../services/forumService';
+} from '../services/questionService.js';
 import { fetchImageBlob, uploadImage } from '../services/imageService';
 import '../style/AskQuestion.css';
+import Header from "../components/Header.jsx";
 
 export default function AskQuestion() {
     const { id } = useParams(); 
@@ -152,10 +153,7 @@ export default function AskQuestion() {
 
     return (
         <div className="pageContainer">
-            <header className="header">
-                <h1 className="logo">F<span style={{ color: '#ff9800' }}>&</span>rum</h1>
-                <button onClick={() => { localStorage.clear(); navigate('/login'); }} className="logoutButton">LogOut</button>
-            </header>
+            <Header />
 
             <main className="askMainContent">
                 <h2 className="pageTitle">{isEditMode ? 'Edit Question' : 'Ask a Question'}</h2>
@@ -165,17 +163,17 @@ export default function AskQuestion() {
 
                     <form onSubmit={handleSubmit} className="askForm">
                         <div className="inputGroup">
-                            <label className="label">Title</label>
-                            <input type="text" value={title} onChange={(e) => setTitle(e.target.value)} className="input" required />
+                            <label className="label" htmlFor="titleInput">Title</label>
+                            <input id="titleInput" type="text" value={title} onChange={(e) => setTitle(e.target.value)} className="input" required />
                         </div>
 
                         <div className="inputGroup">
-                            <label className="label">Description</label>
-                            <textarea value={description} onChange={(e) => setDescription(e.target.value)} className="input textarea" rows="6" required />
+                            <label className="label" htmlFor="descriptionInput">Description</label>
+                            <textarea id="descriptionInput" value={description} onChange={(e) => setDescription(e.target.value)} className="input textarea" rows="6" required />
                         </div>
 
                         <div className="inputGroup">
-                            <label className="label">Attach Image</label>
+                            <label className="label" htmlFor="imageInput">Attach Image</label>
                             
                             {imagePreviewUrl ? (
                                 <div className="imagePreviewContainer">
@@ -184,13 +182,13 @@ export default function AskQuestion() {
                                 </div>
                             ) : (
                                 <div className="fileInputWrapper">
-                                    <input type="file" accept="image/*" onChange={handleFileChange} className="fileInput" />
+                                    <input id="imageInput" type="file" accept="image/*" onChange={handleFileChange} className="fileInput" />
                                 </div>
                             )}
                         </div>
 
                         <div className="inputGroup">
-                            <label className="label">Tags</label>
+                            <label className="label" htmlFor="tagsInput">Tags</label>
                             <span className="tagHelpText">Press enter to confirm each tag.</span>
                             
                             <div className="tagInputContainer">
@@ -201,6 +199,7 @@ export default function AskQuestion() {
                                     </span>
                                 ))}
                                 <input 
+                                    id="tagsInput"
                                     type="text" 
                                     value={currentTagInput}
                                     onChange={(e) => setCurrentTagInput(e.target.value)}

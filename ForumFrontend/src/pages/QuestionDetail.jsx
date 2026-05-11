@@ -2,14 +2,21 @@ import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { 
     getQuestionById, 
-    getVoteCount, 
-    castVote, 
     deleteQuestion
-} from '../services/forumService';
+} from '../services/questionService.js';
 import { getUserById } from "../services/userService";
+<<<<<<< ovidiu.frontend
 import { getCommentsByQuestionId, createComment, deleteComment, editComment } from "../services/commentService";
+=======
+import { getCommentsByQuestionId } from "../services/commentService";
+import { 
+  castVote, 
+  getVoteCount 
+} from "../services/voteService.js"
+>>>>>>> main
 import { fetchImageBlob } from "../services/imageService";
 import "../style/QuestionDetail.css";
+import Header from "../components/Header.jsx";
 
 export default function QuestionDetail() {
   const { id } = useParams();
@@ -43,7 +50,7 @@ export default function QuestionDetail() {
 
         const [authorData, initialQuestionVotes, loadedImageSrc] =
           await Promise.all([
-            getUserById(qData.AuthorId).catch(() => ({
+            getUserById(qData.AuthorId).then(data => data || { Username: "Unknown", Score: 0 }).catch(() => ({
               Username: "Unknown",
               Score: 0,
             })),
@@ -220,20 +227,7 @@ export default function QuestionDetail() {
 
   return (
     <div className="pageContainer">
-      <header className="header">
-        <h1 className="logo">
-          F<span style={{ color: "#ff9800" }}>&</span>rum
-        </h1>
-        <button
-          onClick={() => {
-            localStorage.clear();
-            navigate("/login");
-          }}
-          className="logoutButton"
-        >
-          LogOut
-        </button>
-      </header>
+      <Header />
 
       <main className="detailMainContent">
         <div className="questionCard detailCard">
@@ -358,8 +352,15 @@ export default function QuestionDetail() {
         </div>
 
         <div className="writeCommentCard">
-          <h4 className="writeCommentTitle">Write a comment</h4>
+          <label 
+            htmlFor="commentInput" 
+            className="writeCommentTitle" 
+            style={{ display: 'block' }}
+          >
+            Write a comment
+          </label>
           <textarea
+            id="commentInput"
             className="commentInput"
             placeholder="Share your answer..."
             value={commentText}
@@ -377,12 +378,6 @@ export default function QuestionDetail() {
             {commentImage && <span className="imageName" style={{ fontSize: "0.8rem", marginLeft: "10px" }}>{commentImage.name}</span>}
             <button className="postCommentButton" onClick={handlePostComment}>Post Comment</button>
           </div>
-        </div>
-
-        <div className="bottomActions">
-          <button onClick={() => navigate(-1)} className="backButton">
-            Back
-          </button>
         </div>
       </main>
     </div>

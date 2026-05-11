@@ -22,13 +22,13 @@ public class UnbanUser(ILogger<UnbanUser> logger) : ForumEndpoint<string>(logger
             return;
         }
 
-        var grpcReq = new BanRequest
+        var grpcReq = new UnbanRequest
         {
             ModeratorId = GetUserId(),
             UserId = req
         };
 
-        MessageResponse response = await Client.BanUserAsync(grpcReq, null, null, cancellationToken);
+        MessageResponse response = await Client.UnbanUserAsync(grpcReq, null, null, cancellationToken);
         await SendAsync(response, cancellationToken: cancellationToken);
     }
 }

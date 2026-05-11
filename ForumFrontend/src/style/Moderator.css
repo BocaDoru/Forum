@@ -1,0 +1,137 @@
+.moderatorContainer {
+    padding: 32px 40px;
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.moderatorTitle {
+    font-size: 22px;
+    font-weight: 500;
+    color: #333;
+    margin-bottom: 24px;
+}
+
+.usersTable {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.usersTable th {
+    background: #ff9800;
+    color: white;
+    padding: 12px 16px;
+    text-align: left;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.usersTable td {
+    padding: 12px 16px;
+    font-size: 14px;
+    color: #333;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.usersTable tr:last-child td {
+    border-bottom: none;
+}
+
+.usersTable tr:hover td {
+    background: #fff8f0;
+}
+
+.roleBadge {
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.roleUser {
+    background: #e3f2fd;
+    color: #1565c0;
+}
+
+.roleModerator {
+    background: #fff3e0;
+    color: #e65100;
+}
+
+.statusBadge {
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.statusActive {
+    background: #e8f5e9;
+    color: #2e7d32;
+}
+
+.statusBanned {
+    background: #ffebee;
+    color: #c62828;
+}
+
+.banButton {
+    background: white;
+    color: #c62828;
+    border: 1px solid #c62828;
+    border-radius: 6px;
+    padding: 6px 14px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.banButton:hover {
+    background: #ffebee;
+}
+
+.unbanButton {
+    background: white;
+    color: #2e7d32;
+    border: 1px solid #2e7d32;
+    border-radius: 6px;
+    padding: 6px 14px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.unbanButton:hover {
+    background: #e8f5e9;
+}
+
+.moderatorHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+}
+
+.moderatorTitle {
+    font-size: 22px;
+    font-weight: 500;
+    color: #333;
+    margin: 0;
+}
+
+.searchInput {
+    padding: 8px 14px;
+    border-radius: 6px;
+    border: 1px solid #ddd;
+    background: #f0f0f0;
+    font-size: 14px;
+    outline: none;
+    width: 240px;
+}
+
+.searchInput:focus {
+    border-color: #ff9800;
+}

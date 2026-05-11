@@ -1,6 +1,8 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import Login from './pages/Login';
 import Register from './pages/Register';
+import Account from './pages/Account';
+import Moderator from './pages/Moderator';
 import Home from './pages/Home';
 import AskQuestion from './pages/AskQuestion';
 import QuestionDetail from './pages/QuestionDetail';
@@ -11,6 +13,8 @@ function App() {
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/account" element={<Account />} />
+        <Route path="/moderator" element={<Moderator />} />
         <Route path="/home" element={<Home />} />
         <Route path="*" element={<Navigate to="/login" replace />} />
         <Route path="/ask" element={<AskQuestion />} />
