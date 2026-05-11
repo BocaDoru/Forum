@@ -38,7 +38,6 @@ export default function Register() {
 
   return (
     <div className="pageContainer">
-
       <Header />
 
       <div className="card">
@@ -48,8 +47,11 @@ export default function Register() {
 
         <form onSubmit={handleSubmit} className="form">
           <div className="inputGroup">
-            <label className="label">Username</label>
+            <label className="label" htmlFor="usernameInput">
+              Username
+            </label>
             <input
+              id="usernameInput"
               type="text"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
@@ -59,8 +61,11 @@ export default function Register() {
           </div>
 
           <div className="inputGroup">
-            <label className="label">Email</label>
+            <label className="label" htmlFor="emailInput">
+              Email
+            </label>
             <input
+              id="emailInput"
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
@@ -70,8 +75,11 @@ export default function Register() {
           </div>
 
           <div className="inputGroup">
-            <label className="label">Password</label>
+            <label className="label" htmlFor="passwordInput">
+              Password
+            </label>
             <input
+              id="passwordInput"
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
@@ -89,8 +97,10 @@ export default function Register() {
                 fontSize: "14px",
                 cursor: "pointer",
               }}
+              htmlFor="moderatorCheckbox"
             >
               <input
+                id="moderatorCheckbox"
                 type="checkbox"
                 checked={isModerator}
                 onChange={(e) => setIsModerator(e.target.checked)}
