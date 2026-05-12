@@ -5,11 +5,15 @@ import {
     deleteQuestion
 } from '../services/questionService.js';
 import { getUserById } from "../services/userService";
+<<<<<<< ovidiu.frontend
+import { getCommentsByQuestionId, createComment, deleteComment, editComment } from "../services/commentService";
+=======
 import { getCommentsByQuestionId } from "../services/commentService";
 import { 
   castVote, 
   getVoteCount 
 } from "../services/voteService.js"
+>>>>>>> main
 import { fetchImageBlob } from "../services/imageService";
 import "../style/QuestionDetail.css";
 import Header from "../components/Header.jsx";
@@ -25,6 +29,9 @@ export default function QuestionDetail() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
   const [commentText, setCommentText] = useState("");
+  const [commentImage, setCommentImage] = useState(null);
+  const [editingCommentId, setEditingCommentId] = useState(null);
+  const [editingCommentText, setEditingCommentText] = useState("");
 
   const loggedInUser = JSON.parse(localStorage.getItem("forum_user") || "{}");
 
@@ -117,11 +124,87 @@ export default function QuestionDetail() {
       )
     ) {
       try {
+        if (comments && comments.length > 0) {
+          await Promise.all(
+            comments.map((c) => deleteComment(c.Id).catch(err => console.warn("Failed to delete comment", c.Id, err)))
+          );
+        }
         await deleteQuestion(id);
         navigate("/home");
       } catch (err) {
         alert(err.message || "Failed to delete question.");
       }
+    }
+  };
+
+  const handlePostComment = async () => {
+    if (!commentText.trim()) {
+      alert("Comment text cannot be empty.");
+      return;
+    }
+
+    try {
+      await createComment(id, commentText, commentImage);
+      
+      const commentsData = await getCommentsByQuestionId(id);
+      const commentsWithAuthors = await Promise.all(
+        (commentsData || []).map(async (comment) => {
+          const cAuthor = await getUserById(comment.AuthorId).catch(() => ({
+            Username: "Unknown",
+            Score: 0,
+          }));
+          const cVoteCount = await getVoteCount(comment.Id, false).catch(
+            () => 0,
+          );
+
+          return {
+            ...comment,
+            AuthorInfo: cAuthor,
+            VoteCount: cVoteCount,
+          };
+        }),
+      );
+      
+      setComments(commentsWithAuthors);
+      setCommentText("");
+      setCommentImage(null);
+    } catch (err) {
+      alert(err.message || "Failed to post comment.");
+    }
+  };
+
+  const handleDeleteComment = async (commentId) => {
+    if (window.confirm("Are you sure you want to delete this comment?")) {
+      try {
+        await deleteComment(commentId);
+        setComments((prev) => prev.filter((c) => c.Id !== commentId));
+      } catch (err) {
+        alert(err.message || "Failed to delete comment.");
+      }
+    }
+  };
+
+  const handleEditClick = (comment) => {
+    setEditingCommentId(comment.Id);
+    setEditingCommentText(comment.Text);
+  };
+
+  const handleSaveEdit = async (commentId, imageId) => {
+    if (!editingCommentText.trim()) {
+      alert("Comment text cannot be empty.");
+      return;
+    }
+
+    try {
+      await editComment(commentId, editingCommentText, imageId || "");
+      setComments((prev) =>
+        prev.map((c) =>
+          c.Id === commentId ? { ...c, Text: editingCommentText } : c
+        )
+      );
+      setEditingCommentId(null);
+    } catch (err) {
+      alert(err.message || "Failed to edit comment.");
     }
   };
 
@@ -239,13 +322,29 @@ export default function QuestionDetail() {
                     {new Date(comment.CreatedAt).toLocaleDateString()}
                   </span>
                 </div>
-                <p className="commentText">{comment.Text}</p>
-
-                {canEditOrDelete(comment.AuthorId) && (
-                  <div className="cardFooter commentFooter">
-                    <button className="editLink">Edit</button>
-                    <button className="deleteLink">Delete</button>
+                {editingCommentId === comment.Id ? (
+                  <div className="editModeContainer" style={{ marginTop: "10px" }}>
+                    <textarea
+                      className="commentInput"
+                      value={editingCommentText}
+                      onChange={(e) => setEditingCommentText(e.target.value)}
+                      style={{ minHeight: "80px", marginBottom: "10px" }}
+                    />
+                    <div className="commentActions">
+                      <button className="postCommentButton" onClick={() => handleSaveEdit(comment.Id, comment.ImageId)}>Save</button>
+                      <button className="postCommentButton" style={{ background: "transparent", color: "inherit", border: "1px solid #444" }} onClick={() => setEditingCommentId(null)}>Cancel</button>
+                    </div>
                   </div>
+                ) : (
+                  <>
+                    <p className="commentText">{comment.Text}</p>
+                    {canEditOrDelete(comment.AuthorId) && (
+                      <div className="cardFooter commentFooter">
+                        <button className="editLink" onClick={() => handleEditClick(comment)}>Edit</button>
+                        <button className="deleteLink" onClick={() => handleDeleteComment(comment.Id)}>Delete</button>
+                      </div>
+                    )}
+                  </>
                 )}
               </div>
             </div>
@@ -268,8 +367,16 @@ export default function QuestionDetail() {
             onChange={(e) => setCommentText(e.target.value)}
           ></textarea>
           <div className="commentActions">
-            <span className="attachIcon">📎</span>
-            <button className="postCommentButton">Post Comment</button>
+            <label className="attachIcon" style={{ cursor: "pointer" }}>
+              📎
+              <input
+                type="file"
+                style={{ display: "none" }}
+                onChange={(e) => setCommentImage(e.target.files[0])}
+              />
+            </label>
+            {commentImage && <span className="imageName" style={{ fontSize: "0.8rem", marginLeft: "10px" }}>{commentImage.name}</span>}
+            <button className="postCommentButton" onClick={handlePostComment}>Post Comment</button>
           </div>
         </div>
       </main>

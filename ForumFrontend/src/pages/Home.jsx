@@ -94,9 +94,13 @@ export default function Home() {
 
       await hydrateAndSetQuestions(questionsData);
     } catch (err) {
-      setError(
-        err.message || "Failed to apply filter. Check your search term.",
-      );
+      if (err.message && err.message.includes("404")) {
+        setError("No questions found with this search term.");
+      } else {
+        setError(
+          err.message || "Failed to apply filter. Check your search term.",
+        );
+      }
     } finally {
       setIsLoading(false);
     }
