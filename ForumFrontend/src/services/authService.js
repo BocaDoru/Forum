@@ -7,14 +7,13 @@ export const loginUser = async (email, password) => {
     });
 };
 
-export const registerUser = async (username, email, password, isModerator) => {
+export const registerUser = async (username, email, password) => {
     return apiClient('/users/register', {
         method: 'POST',
         body: { 
             Email: email, 
             Username: username, 
-            Password: password, 
-            IsModerator: isModerator
+            Password: password
         },
     });
 };

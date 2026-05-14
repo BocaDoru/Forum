@@ -19,18 +19,19 @@ describe('Register Component', () => {
         expect(screen.getByLabelText(/password/i)).toBeInTheDocument();
     });
 
-    it('submits the form and handles the moderator checkbox', async () => {
+    it('submits the form successfully', async () => {
         const user = userEvent.setup();
         render(<Register />);
 
         await user.type(screen.getByLabelText(/username/i), 'NewUser');
         await user.type(screen.getByLabelText(/email/i), 'new@user.com');
         await user.type(screen.getByLabelText(/password/i), 'securePass');
-        await user.click(screen.getByLabelText(/register as moderator/i));
+        
+        
         await user.click(screen.getByRole('button', { name: /register/i }));
 
         await waitFor(() => {
-            expect(registerUser).toHaveBeenCalledWith('NewUser', 'new@user.com', 'securePass', true);
+            expect(registerUser).toHaveBeenCalledWith('NewUser', 'new@user.com', 'securePass');
         });
     });
 });
