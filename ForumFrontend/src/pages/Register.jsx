@@ -8,7 +8,6 @@ export default function Register() {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [isModerator, setIsModerator] = useState(false);
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
@@ -20,7 +19,7 @@ export default function Register() {
     setIsLoading(true);
 
     try {
-      const data = await registerUser(username, email, password, isModerator);
+      const data = await registerUser(username, email, password);
 
       const token = data.JwtToken;
       const user = data.User;
@@ -86,27 +85,6 @@ export default function Register() {
               className="input"
               required
             />
-          </div>
-
-          <div className="checkboxGroup">
-            <label
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "10px",
-                fontSize: "14px",
-                cursor: "pointer",
-              }}
-              htmlFor="moderatorCheckbox"
-            >
-              <input
-                id="moderatorCheckbox"
-                type="checkbox"
-                checked={isModerator}
-                onChange={(e) => setIsModerator(e.target.checked)}
-              />
-              Register as Moderator
-            </label>
           </div>
 
           <div className="buttonContainer">
