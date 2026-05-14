@@ -5,18 +5,22 @@ import {
     deleteQuestion
 } from '../services/questionService.js';
 import { getUserById } from "../services/userService";
-<<<<<<< ovidiu.frontend
 import { getCommentsByQuestionId, createComment, deleteComment, editComment } from "../services/commentService";
-=======
-import { getCommentsByQuestionId } from "../services/commentService";
 import { 
   castVote, 
-  getVoteCount 
-} from "../services/voteService.js"
->>>>>>> main
+  getVoteCount,
+  getUserVote
+} from "../services/voteService.js";
 import { fetchImageBlob } from "../services/imageService";
 import "../style/QuestionDetail.css";
 import Header from "../components/Header.jsx";
+
+const mapVoteToState = (voteData) => {
+  if (!voteData) return 0;
+  const isDownvote = voteData.IsDownvote !== undefined ? voteData.IsDownvote : voteData.isDownvote;
+  if (isDownvote === undefined) return 0;
+  return isDownvote ? -1 : 1;
+};
 
 export default function QuestionDetail() {
   const { id } = useParams();
@@ -48,7 +52,7 @@ export default function QuestionDetail() {
       try {
         const qData = await getQuestionById(id);
 
-        const [authorData, initialQuestionVotes, loadedImageSrc] =
+        const [authorData, initialQuestionVotes, loadedImageSrc, initialUserVote] =
           await Promise.all([
             getUserById(qData.AuthorId).then(data => data || { Username: "Unknown", Score: 0 }).catch(() => ({
               Username: "Unknown",
@@ -58,12 +62,14 @@ export default function QuestionDetail() {
             qData.ImageId
               ? fetchImageBlob(qData.ImageId).catch(() => null)
               : Promise.resolve(null),
+            getUserVote(id, true).catch(() => null),
           ]);
 
         setQuestion({
           ...qData,
           AuthorInfo: authorData,
           VoteCount: initialQuestionVotes,
+          UserVote: mapVoteToState(initialUserVote),
         });
         setImageSrc(loadedImageSrc);
 
@@ -78,11 +84,13 @@ export default function QuestionDetail() {
             const cVoteCount = await getVoteCount(comment.Id, false).catch(
               () => 0,
             );
+            const cUserVote = await getUserVote(comment.Id, false).catch(() => null);
 
             return {
               ...comment,
               AuthorInfo: cAuthor,
               VoteCount: cVoteCount,
+              UserVote: mapVoteToState(cUserVote),
             };
           }),
         );
@@ -102,13 +110,15 @@ export default function QuestionDetail() {
     try {
       await castVote(postId, isQuestion, isDownvote);
       const newCount = await getVoteCount(postId, isQuestion);
+      const newUserVote = await getUserVote(postId, isQuestion).catch(() => null);
+      const newUserVoteState = mapVoteToState(newUserVote);
 
       if (isQuestion) {
-        setQuestion((prev) => ({ ...prev, VoteCount: newCount }));
+        setQuestion((prev) => ({ ...prev, VoteCount: newCount, UserVote: newUserVoteState }));
       } else {
         setComments((prev) =>
           prev.map((c) =>
-            c.Id === postId ? { ...c, VoteCount: newCount } : c,
+            c.Id === postId ? { ...c, VoteCount: newCount, UserVote: newUserVoteState } : c,
           ),
         );
       }
@@ -233,14 +243,14 @@ export default function QuestionDetail() {
         <div className="questionCard detailCard">
           <div className="voteColumn">
             <button
-              className="voteArrow"
+              className={`voteArrow ${question.UserVote === 1 ? 'active-upvote' : ''}`}
               onClick={() => handleVote(question.Id, true, false)}
             >
               ▲
             </button>
             <span className="voteCount">{question.VoteCount}</span>
             <button
-              className="voteArrow"
+              className={`voteArrow ${question.UserVote === -1 ? 'active-downvote' : ''}`}
               onClick={() => handleVote(question.Id, true, true)}
             >
               ▼
@@ -295,14 +305,14 @@ export default function QuestionDetail() {
             <div key={idx} className="questionCard commentCard">
               <div className="voteColumn">
                 <button
-                  className="voteArrow"
+                  className={`voteArrow ${comment.UserVote === 1 ? 'active-upvote' : ''}`}
                   onClick={() => handleVote(comment.Id, false, false)}
                 >
                   ▲
                 </button>
                 <span className="voteCount">{comment.VoteCount}</span>
                 <button
-                  className="voteArrow"
+                  className={`voteArrow ${comment.UserVote === -1 ? 'active-downvote' : ''}`}
                   onClick={() => handleVote(comment.Id, false, true)}
                 >
                   ▼
