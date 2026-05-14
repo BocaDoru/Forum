@@ -9,9 +9,17 @@ import {
 } from "../services/questionService.js";
 
 import { getUserById, getUserByEmail } from "../services/userService";
+import { getVoteCount, getUserVote } from "../services/voteService.js";
 
 import "../style/Home.css";
 import Header from "../components/Header.jsx";
+
+const mapVoteToState = (voteData) => {
+  if (!voteData) return 0;
+  const isDownvote = voteData.IsDownvote !== undefined ? voteData.IsDownvote : voteData.isDownvote;
+  if (isDownvote === undefined) return 0;
+  return isDownvote ? -1 : 1;
+};
 
 export default function Home() {
   const [questions, setQuestions] = useState([]);
@@ -28,9 +36,10 @@ export default function Home() {
       rawQuestions.map(async (q) => {
         try {
           const authorData = await getUserById(q.AuthorId).catch(() => null);
-          return { ...q, AuthorInfo: authorData || { Username: "Unknown", Score: 0 } };
+          const userVoteData = await getUserVote(q.Id, true).catch(() => null);
+          return { ...q, AuthorInfo: authorData || { Username: "Unknown", Score: 0 }, UserVote: mapVoteToState(userVoteData) };
         } catch (err) {
-          return { ...q, AuthorInfo: { Username: "Unknown", Score: 0 } };
+          return { ...q, AuthorInfo: { Username: "Unknown", Score: 0 }, UserVote: 0 };
         }
       }),
     );
@@ -186,9 +195,13 @@ export default function Home() {
           {questions.map((q, index) => (
             <div key={index} className="questionCard" onClick={() => navigate(`/question/${q.Id}`)} style={{ cursor: 'pointer' }}>
               <div className="voteColumn">
-                <button className="voteArrow">▲</button>
+                <span className={`voteArrow ${q.UserVote === 1 ? 'active-upvote' : ''}`}>
+                  ▲
+                </span>
                 <span className="voteCount">{q.VoteCount}</span>
-                <button className="voteArrow">▼</button>
+                <span className={`voteArrow ${q.UserVote === -1 ? 'active-downvote' : ''}`}>
+                  ▼
+                </span>
               </div>
 
               <div className="contentColumn">
