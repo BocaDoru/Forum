@@ -197,6 +197,7 @@ public class UsersServiceImplementation(
         await users.ReplaceAsync(user);
 
         await SendBannedEmail(user, moderator, reason);
+        await SendBannedSms(user, moderator, reason);
         _logger.LogInformation("User:{userId} was banned by moderator:{moderatorId} for {reason}", userId, moderatorId, reason ?? "Bad behaviour");
     }
 
@@ -319,6 +320,54 @@ public class UsersServiceImplementation(
         {
             _logger.LogError(ex, "Failed to send email due to an unexpected error");
             throw new InternalErrorException("Failed to send banned email to user.");
+        }
+    }
+
+    private async Task SendBannedSms(User bannedUser, User moderator, string? reason)
+    {
+        try
+        {
+            var apiKey = _configuration["VonageSettings:ApiKey"];
+            var apiSecret = _configuration["VonageSettings:ApiSecret"];
+            var toPhone = _configuration["VonageSettings:TargetPhoneNumber"];
+            var fromName = _configuration["VonageSettings:SenderName"];
+
+            if (string.IsNullOrEmpty(apiKey) || string.IsNullOrEmpty(apiSecret) || string.IsNullOrEmpty(toPhone))
+            {
+                _logger.LogWarning("Vonage settings are missing. SMS will not be sent.");
+                return;
+            }
+
+            var text = $"User {bannedUser.Username} was banned by {moderator.Username}. Reason: {reason ?? "Bad behavior."}";
+
+            using var httpClient = new HttpClient();
+            var payload = new Dictionary<string, string>
+            {
+                { "api_key", apiKey },
+                { "api_secret", apiSecret },
+                { "to", toPhone },
+                { "from", fromName ?? "Vonage APIs" },
+                { "text", text }
+            };
+
+            var content = new FormUrlEncodedContent(payload);
+            var response = await httpClient.PostAsync("https://rest.nexmo.com/sms/json", content);
+
+            if (response.IsSuccessStatusCode)
+            {
+                _logger.LogInformation("SMS successfully sent to {Phone}", toPhone);
+            }
+            else
+            {
+                var errorBody = await response.Content.ReadAsStringAsync();
+                _logger.LogError("Vonage SMS error (code {StatusCode}): {ErrorBody}", response.StatusCode, errorBody);
+                throw new InternalErrorException($"Vonage SMS error: {errorBody}");
+            }
+        }
+        catch (ServiceMessageException ex)
+        {
+            _logger.LogError(ex, "Failed to send SMS due to an unexpected error");
+            throw new InternalErrorException("Failed to send banned SMS to user.");
         }
     }
 
