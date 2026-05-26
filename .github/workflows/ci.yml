@@ -1,4 +1,4 @@
-name: CI Pipeline
+name: Assignment 3 CI Pipeline
 
 on:
   push:
@@ -27,7 +27,7 @@ jobs:
       - name: Install dependencies
         run: npm install
         
-      - name: Run Linter (Code Quality)
+      - name: Run Linter
         continue-on-error: true
         run: npm run lint
         
@@ -35,8 +35,8 @@ jobs:
         continue-on-error: true
         run: npm run test
 
-  backend-checks:
-    name: Backend Build & Lint (.NET)
+  backend-e2e-pipeline:
+    name: Backend Build & E2E Tests (Docker Compose)
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -45,42 +45,15 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
         
-      - name: Setup .NET
+      - name: Setup .NET (for formatting checks)
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '8.0.x'
           
       - name: Check Formatting (Code Quality)
         continue-on-error: true
-        run: dotnet format --verify-no-changes
+        run: find . -name "*.csproj" -exec dotnet format {} --verify-no-changes \;
         
-      - name: Build Microservices & Gateway
-        run: dotnet build
-
-  e2e-testing:
-    name: E2E Architecture Tests (Docker + Console)
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-        
-      - name: Setup .NET (for test console app)
-        uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: '8.0.x'
-          
-      - name: Start Architecture (Docker Compose)
-        working-directory: ForumBackend
-        run: docker compose up -d
-        
-      - name: Wait for Environment Initialization
-        run: sleep 20
-        
-      - name: Run E2E Console Tests
-        working-directory: ForumBackend/servicetest
+      - name: Run Architecture & E2E Tests
         continue-on-error: true
-        run: dotnet run
-        
-      - name: Tear Down Architecture
-        working-directory: ForumBackend
-        run: docker compose down
+        run: docker compose up --build --abort-on-container-exit --exit-code-from servicetest
