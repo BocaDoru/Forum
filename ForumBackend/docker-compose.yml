@@ -56,6 +56,10 @@ services:
       - BrevoSettings__ApiUrl=https://api.brevo.com/v3/smtp/email
       - BrevoSettings__EmailFrom=bocaioandoru12@gmail.com
       - BrevoSettings__SenderName=Forum
+      - VonageSettings__ApiKey=***REMOVED***
+      - VonageSettings__ApiSecret=***REMOVED***
+      - VonageSettings__TargetPhoneNumber=***REMOVED***
+      - VonageSettings__SenderName=Vonage APIs
     depends_on:
       - mongo
   
