@@ -8,12 +8,12 @@ vi.mock('../../services/userService');
 
 describe('Account Component', () => {
     beforeEach(() => {
-        localStorage.clear();
-        localStorage.setItem('forum_user', JSON.stringify({ Id: 'user1', Username: 'GhostTester', Email: 'ghost@tester.com' }));
+        sessionStorage.clear();
+        sessionStorage.setItem('forum_user', JSON.stringify({ Id: 'user1', Username: 'GhostTester', Email: 'ghost@tester.com' }));
         window.confirm = vi.fn().mockReturnValue(true); 
     });
 
-    it('renders user details from localStorage', () => {
+    it('renders user details from sessionStorage', () => {
         render(<Account />);
         expect(screen.getByText('GhostTester')).toBeInTheDocument();
         expect(screen.getByText('ghost@tester.com')).toBeInTheDocument();
@@ -44,7 +44,7 @@ describe('Account Component', () => {
         await waitFor(() => {
             expect(window.confirm).toHaveBeenCalled();
             expect(deleteUser).toHaveBeenCalled();
-            expect(localStorage.getItem('forum_token')).toBeNull();
+            expect(sessionStorage.getItem('forum_token')).toBeNull();
         });
     });
 });

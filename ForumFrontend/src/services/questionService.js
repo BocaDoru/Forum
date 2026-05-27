@@ -77,3 +77,10 @@ export const editQuestion = async (questionId, title, text, tagIds, status, imag
         }
     });
 };
+
+export const solveQuestion = async (questionId) => {
+    return apiClient(`/questions/solve`, {
+        method: 'POST',
+        body: questionId
+    });
+};

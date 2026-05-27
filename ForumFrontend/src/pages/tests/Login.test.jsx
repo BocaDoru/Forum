@@ -8,7 +8,7 @@ vi.mock('../../services/authService');
 
 describe('Login Component', () => {
     beforeEach(() => {
-        localStorage.clear();
+        sessionStorage.clear();
     });
 
     it('renders the login form correctly', () => {
@@ -29,7 +29,7 @@ describe('Login Component', () => {
 
         await waitFor(() => {
             expect(loginUser).toHaveBeenCalledWith('ghost@tester.com', 'password123');
-            expect(localStorage.getItem('forum_token')).toBe('fake-jwt-token');
+            expect(sessionStorage.getItem('forum_token')).toBe('fake-jwt-token');
         });
     });
 });

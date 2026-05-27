@@ -10,8 +10,8 @@ vi.mock('../../services/userService');
 
 describe('Home Component', () => {
     beforeEach(() => {
-        localStorage.clear();
-        localStorage.setItem('forum_user', JSON.stringify({ Id: 'user1', Username: 'GhostTester' }));
+        sessionStorage.clear();
+        sessionStorage.setItem('forum_user', JSON.stringify({ Id: 'user1', Username: 'GhostTester' }));
     });
 
     it('renders default questions on load', async () => {

@@ -20,8 +20,8 @@ vi.mock('react-router-dom', async () => {
 
 describe('QuestionDetail Component', () => {
     beforeEach(() => {
-        localStorage.clear();
-        localStorage.setItem('forum_user', JSON.stringify({ Id: 'user1', Username: 'GhostTester' }));
+        sessionStorage.clear();
+        sessionStorage.setItem('forum_user', JSON.stringify({ Id: 'user1', Username: 'GhostTester' }));
     });
 
     it('loads the question and comments', async () => {

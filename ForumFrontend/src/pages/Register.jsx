@@ -24,8 +24,8 @@ export default function Register() {
       const token = data.JwtToken;
       const user = data.User;
 
-      localStorage.setItem("forum_token", token);
-      localStorage.setItem("forum_user", JSON.stringify(user));
+      sessionStorage.setItem("forum_token", token);
+      sessionStorage.setItem("forum_user", JSON.stringify(user));
       navigate("/home");
       console.log(`Registration successful! Welcome ${user.Username}`);
     } catch (err) {

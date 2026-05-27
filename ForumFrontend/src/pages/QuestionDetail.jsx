@@ -1,15 +1,21 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { 
-    getQuestionById, 
-    deleteQuestion
-} from '../services/questionService.js';
+import {
+  getQuestionById,
+  deleteQuestion,
+  solveQuestion,
+} from "../services/questionService.js";
 import { getUserById } from "../services/userService";
-import { getCommentsByQuestionId, createComment, deleteComment, editComment } from "../services/commentService";
-import { 
-  castVote, 
+import {
+  getCommentsByQuestionId,
+  createComment,
+  deleteComment,
+  editComment,
+} from "../services/commentService";
+import {
+  castVote,
   getVoteCount,
-  getUserVote
+  getUserVote,
 } from "../services/voteService.js";
 import { fetchImageBlob } from "../services/imageService";
 import "../style/QuestionDetail.css";
@@ -17,7 +23,10 @@ import Header from "../components/Header.jsx";
 
 const mapVoteToState = (voteData) => {
   if (!voteData) return 0;
-  const isDownvote = voteData.IsDownvote !== undefined ? voteData.IsDownvote : voteData.isDownvote;
+  const isDownvote =
+    voteData.IsDownvote !== undefined
+      ? voteData.IsDownvote
+      : voteData.isDownvote;
   if (isDownvote === undefined) return 0;
   return isDownvote ? -1 : 1;
 };
@@ -37,7 +46,7 @@ export default function QuestionDetail() {
   const [editingCommentId, setEditingCommentId] = useState(null);
   const [editingCommentText, setEditingCommentText] = useState("");
 
-  const loggedInUser = JSON.parse(localStorage.getItem("forum_user") || "{}");
+  const loggedInUser = JSON.parse(sessionStorage.getItem("forum_user") || "{}");
 
   const canEditOrDelete = (postAuthorId) => {
     if (!loggedInUser || !loggedInUser.Id) return false;
@@ -52,18 +61,24 @@ export default function QuestionDetail() {
       try {
         const qData = await getQuestionById(id);
 
-        const [authorData, initialQuestionVotes, loadedImageSrc, initialUserVote] =
-          await Promise.all([
-            getUserById(qData.AuthorId).then(data => data || { Username: "Unknown", Score: 0 }).catch(() => ({
+        const [
+          authorData,
+          initialQuestionVotes,
+          loadedImageSrc,
+          initialUserVote,
+        ] = await Promise.all([
+          getUserById(qData.AuthorId)
+            .then((data) => data || { Username: "Unknown", Score: 0 })
+            .catch(() => ({
               Username: "Unknown",
               Score: 0,
             })),
-            getVoteCount(id, true).catch(() => 0),
-            qData.ImageId
-              ? fetchImageBlob(qData.ImageId).catch(() => null)
-              : Promise.resolve(null),
-            getUserVote(id, true).catch(() => null),
-          ]);
+          getVoteCount(id, true).catch(() => 0),
+          qData.ImageId
+            ? fetchImageBlob(qData.ImageId).catch(() => null)
+            : Promise.resolve(null),
+          getUserVote(id, true).catch(() => null),
+        ]);
 
         setQuestion({
           ...qData,
@@ -84,7 +99,9 @@ export default function QuestionDetail() {
             const cVoteCount = await getVoteCount(comment.Id, false).catch(
               () => 0,
             );
-            const cUserVote = await getUserVote(comment.Id, false).catch(() => null);
+            const cUserVote = await getUserVote(comment.Id, false).catch(
+              () => null,
+            );
 
             return {
               ...comment,
@@ -110,15 +127,23 @@ export default function QuestionDetail() {
     try {
       await castVote(postId, isQuestion, isDownvote);
       const newCount = await getVoteCount(postId, isQuestion);
-      const newUserVote = await getUserVote(postId, isQuestion).catch(() => null);
+      const newUserVote = await getUserVote(postId, isQuestion).catch(
+        () => null,
+      );
       const newUserVoteState = mapVoteToState(newUserVote);
 
       if (isQuestion) {
-        setQuestion((prev) => ({ ...prev, VoteCount: newCount, UserVote: newUserVoteState }));
+        setQuestion((prev) => ({
+          ...prev,
+          VoteCount: newCount,
+          UserVote: newUserVoteState,
+        }));
       } else {
         setComments((prev) =>
           prev.map((c) =>
-            c.Id === postId ? { ...c, VoteCount: newCount, UserVote: newUserVoteState } : c,
+            c.Id === postId
+              ? { ...c, VoteCount: newCount, UserVote: newUserVoteState }
+              : c,
           ),
         );
       }
@@ -136,7 +161,11 @@ export default function QuestionDetail() {
       try {
         if (comments && comments.length > 0) {
           await Promise.all(
-            comments.map((c) => deleteComment(c.Id).catch(err => console.warn("Failed to delete comment", c.Id, err)))
+            comments.map((c) =>
+              deleteComment(c.Id).catch((err) =>
+                console.warn("Failed to delete comment", c.Id, err),
+              ),
+            ),
           );
         }
         await deleteQuestion(id);
@@ -155,26 +184,28 @@ export default function QuestionDetail() {
 
     try {
       await createComment(id, commentText, commentImage);
-      
-      const commentsData = await getCommentsByQuestionId(id);
-      const commentsWithAuthors = await Promise.all(
-        (commentsData || []).map(async (comment) => {
-          const cAuthor = await getUserById(comment.AuthorId).catch(() => ({
-            Username: "Unknown",
-            Score: 0,
-          }));
-          const cVoteCount = await getVoteCount(comment.Id, false).catch(
-            () => 0,
-          );
 
-          return {
-            ...comment,
-            AuthorInfo: cAuthor,
-            VoteCount: cVoteCount,
-          };
-        }),
-      );
-      
+      const commentsData = await getCommentsByQuestionId(id);
+      const commentsWithAuthors = [];
+      for (const comment of commentsData || []) {
+        const cAuthor = await getUserById(comment.AuthorId).catch(() => ({
+          Username: "Unknown",
+          Score: 0,
+        }));
+        const cVoteCount = await getVoteCount(comment.Id, false).catch(() => 0);
+        const cUserVote = await getUserVote(comment.Id, false).catch(
+          () => null,
+        );
+
+        commentsWithAuthors.push({
+          ...comment,
+          AuthorInfo: cAuthor,
+          VoteCount: cVoteCount,
+          UserVote: mapVoteToState(cUserVote),
+        });
+      }
+      setComments(commentsWithAuthors);
+
       setComments(commentsWithAuthors);
       setCommentText("");
       setCommentImage(null);
@@ -209,8 +240,8 @@ export default function QuestionDetail() {
       await editComment(commentId, editingCommentText, imageId || "");
       setComments((prev) =>
         prev.map((c) =>
-          c.Id === commentId ? { ...c, Text: editingCommentText } : c
-        )
+          c.Id === commentId ? { ...c, Text: editingCommentText } : c,
+        ),
       );
       setEditingCommentId(null);
     } catch (err) {
@@ -231,6 +262,19 @@ export default function QuestionDetail() {
     }
   };
 
+  const handleSolveQuestion = async () => {
+    if (
+      window.confirm("Are you sure you want to mark this question as solved?")
+    ) {
+      try {
+        await solveQuestion(id);
+        setQuestion((prev) => ({ ...prev, Status: 2 }));
+      } catch (err) {
+        alert(err.message || "Failed to mark question as solved.");
+      }
+    }
+  };
+
   if (isLoading) return <div className="loadingText">Loading...</div>;
   if (error) return <div className="errorText">{error}</div>;
   if (!question) return <div className="errorText">Question not found.</div>;
@@ -243,14 +287,14 @@ export default function QuestionDetail() {
         <div className="questionCard detailCard">
           <div className="voteColumn">
             <button
-              className={`voteArrow ${question.UserVote === 1 ? 'active-upvote' : ''}`}
+              className={`voteArrow ${question.UserVote === 1 ? "active-upvote" : ""}`}
               onClick={() => handleVote(question.Id, true, false)}
             >
               ▲
             </button>
             <span className="voteCount">{question.VoteCount}</span>
             <button
-              className={`voteArrow ${question.UserVote === -1 ? 'active-downvote' : ''}`}
+              className={`voteArrow ${question.UserVote === -1 ? "active-downvote" : ""}`}
               onClick={() => handleVote(question.Id, true, true)}
             >
               ▼
@@ -284,6 +328,16 @@ export default function QuestionDetail() {
 
             {canEditOrDelete(question.AuthorId) && (
               <div className="cardFooter">
+                {question.Status !== 2 && (
+                  <button
+                    className="editLink"
+                    style={{ color: "#4CAF50", marginRight: "10px" }}
+                    onClick={handleSolveQuestion}
+                  >
+                    ✓ Mark as Solved
+                  </button>
+                )}
+
                 <button
                   className="editLink"
                   onClick={() => navigate(`/edit-question/${question.Id}`)}
@@ -305,14 +359,14 @@ export default function QuestionDetail() {
             <div key={idx} className="questionCard commentCard">
               <div className="voteColumn">
                 <button
-                  className={`voteArrow ${comment.UserVote === 1 ? 'active-upvote' : ''}`}
+                  className={`voteArrow ${comment.UserVote === 1 ? "active-upvote" : ""}`}
                   onClick={() => handleVote(comment.Id, false, false)}
                 >
                   ▲
                 </button>
                 <span className="voteCount">{comment.VoteCount}</span>
                 <button
-                  className={`voteArrow ${comment.UserVote === -1 ? 'active-downvote' : ''}`}
+                  className={`voteArrow ${comment.UserVote === -1 ? "active-downvote" : ""}`}
                   onClick={() => handleVote(comment.Id, false, true)}
                 >
                   ▼
@@ -333,7 +387,10 @@ export default function QuestionDetail() {
                   </span>
                 </div>
                 {editingCommentId === comment.Id ? (
-                  <div className="editModeContainer" style={{ marginTop: "10px" }}>
+                  <div
+                    className="editModeContainer"
+                    style={{ marginTop: "10px" }}
+                  >
                     <textarea
                       className="commentInput"
                       value={editingCommentText}
@@ -341,8 +398,25 @@ export default function QuestionDetail() {
                       style={{ minHeight: "80px", marginBottom: "10px" }}
                     />
                     <div className="commentActions">
-                      <button className="postCommentButton" onClick={() => handleSaveEdit(comment.Id, comment.ImageId)}>Save</button>
-                      <button className="postCommentButton" style={{ background: "transparent", color: "inherit", border: "1px solid #444" }} onClick={() => setEditingCommentId(null)}>Cancel</button>
+                      <button
+                        className="postCommentButton"
+                        onClick={() =>
+                          handleSaveEdit(comment.Id, comment.ImageId)
+                        }
+                      >
+                        Save
+                      </button>
+                      <button
+                        className="postCommentButton"
+                        style={{
+                          background: "transparent",
+                          color: "inherit",
+                          border: "1px solid #444",
+                        }}
+                        onClick={() => setEditingCommentId(null)}
+                      >
+                        Cancel
+                      </button>
                     </div>
                   </div>
                 ) : (
@@ -350,8 +424,18 @@ export default function QuestionDetail() {
                     <p className="commentText">{comment.Text}</p>
                     {canEditOrDelete(comment.AuthorId) && (
                       <div className="cardFooter commentFooter">
-                        <button className="editLink" onClick={() => handleEditClick(comment)}>Edit</button>
-                        <button className="deleteLink" onClick={() => handleDeleteComment(comment.Id)}>Delete</button>
+                        <button
+                          className="editLink"
+                          onClick={() => handleEditClick(comment)}
+                        >
+                          Edit
+                        </button>
+                        <button
+                          className="deleteLink"
+                          onClick={() => handleDeleteComment(comment.Id)}
+                        >
+                          Delete
+                        </button>
                       </div>
                     )}
                   </>
@@ -361,34 +445,57 @@ export default function QuestionDetail() {
           ))}
         </div>
 
-        <div className="writeCommentCard">
-          <label 
-            htmlFor="commentInput" 
-            className="writeCommentTitle" 
-            style={{ display: 'block' }}
-          >
-            Write a comment
-          </label>
-          <textarea
-            id="commentInput"
-            className="commentInput"
-            placeholder="Share your answer..."
-            value={commentText}
-            onChange={(e) => setCommentText(e.target.value)}
-          ></textarea>
-          <div className="commentActions">
-            <label className="attachIcon" style={{ cursor: "pointer" }}>
-              📎
-              <input
-                type="file"
-                style={{ display: "none" }}
-                onChange={(e) => setCommentImage(e.target.files[0])}
-              />
+        {question.Status !== 2 ? (
+          <div className="writeCommentCard">
+            <label
+              htmlFor="commentInput"
+              className="writeCommentTitle"
+              style={{ display: "block" }}
+            >
+              Write a comment
             </label>
-            {commentImage && <span className="imageName" style={{ fontSize: "0.8rem", marginLeft: "10px" }}>{commentImage.name}</span>}
-            <button className="postCommentButton" onClick={handlePostComment}>Post Comment</button>
+            <textarea
+              id="commentInput"
+              className="commentInput"
+              placeholder="Share your answer..."
+              value={commentText}
+              onChange={(e) => setCommentText(e.target.value)}
+            ></textarea>
+            <div className="commentActions">
+              <label className="attachIcon" style={{ cursor: "pointer" }}>
+                📎
+                <input
+                  type="file"
+                  style={{ display: "none" }}
+                  onChange={(e) => setCommentImage(e.target.files[0])}
+                />
+              </label>
+              {commentImage && (
+                <span
+                  className="imageName"
+                  style={{ fontSize: "0.8rem", marginLeft: "10px" }}
+                >
+                  {commentImage.name}
+                </span>
+              )}
+              <button className="postCommentButton" onClick={handlePostComment}>
+                Post Comment
+              </button>
+            </div>
           </div>
-        </div>
+        ) : (
+          <div
+            className="writeCommentCard"
+            style={{ textAlign: "center", padding: "30px", color: "#888" }}
+          >
+            <h4 style={{ margin: "0 0 10px 0", color: "#4CAF50" }}>
+              ✓ This question has been solved
+            </h4>
+            <p style={{ margin: 0 }}>
+              This thread is now closed to new comments.
+            </p>
+          </div>
+        )}
       </main>
     </div>
   );

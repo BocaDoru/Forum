@@ -8,7 +8,7 @@ vi.mock('../../services/authService');
 
 describe('Register Component', () => {
     beforeEach(() => {
-        localStorage.clear();
+        sessionStorage.clear();
     });
 
     it('renders the registration form correctly', () => {

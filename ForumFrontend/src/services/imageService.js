@@ -1,7 +1,7 @@
 import { apiClient } from './apiClient';
 
 export const fetchImageBlob = async (imageId) => {
-    const token = localStorage.getItem('forum_token');
+    const token = sessionStorage.getItem('forum_token');
 
     const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/images/${imageId}`, {
         headers: {

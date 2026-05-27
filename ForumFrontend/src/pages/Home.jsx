@@ -16,7 +16,10 @@ import Header from "../components/Header.jsx";
 
 const mapVoteToState = (voteData) => {
   if (!voteData) return 0;
-  const isDownvote = voteData.IsDownvote !== undefined ? voteData.IsDownvote : voteData.isDownvote;
+  const isDownvote =
+    voteData.IsDownvote !== undefined
+      ? voteData.IsDownvote
+      : voteData.isDownvote;
   if (isDownvote === undefined) return 0;
   return isDownvote ? -1 : 1;
 };
@@ -32,18 +35,21 @@ export default function Home() {
   const navigate = useNavigate();
 
   const hydrateAndSetQuestions = async (rawQuestions) => {
-    const questionsWithAuthors = await Promise.all(
-      rawQuestions.map(async (q) => {
-        try {
-          const authorData = await getUserById(q.AuthorId).catch(() => null);
-          const userVoteData = await getUserVote(q.Id, true).catch(() => null);
-          return { ...q, AuthorInfo: authorData || { Username: "Unknown", Score: 0 }, UserVote: mapVoteToState(userVoteData) };
-        } catch (err) {
-          return { ...q, AuthorInfo: { Username: "Unknown", Score: 0 }, UserVote: 0 };
-        }
-      }),
-    );
-
+    const questionsWithAuthors = [];
+    for (const q of rawQuestions) {
+      try {
+        const authorData = await getUserById(q.AuthorId).catch(() => null);
+        questionsWithAuthors.push({
+          ...q,
+          AuthorInfo: authorData || { Username: "Unknown", Score: 0 },
+        });
+      } catch (err) {
+        questionsWithAuthors.push({
+          ...q,
+          AuthorInfo: { Username: "Unknown", Score: 0 },
+        });
+      }
+    }
     setQuestions(questionsWithAuthors);
   };
 
@@ -85,7 +91,7 @@ export default function Home() {
           questionsData = await getQuestionsByTag(searchTerm, 1);
           break;
         case "my_questions": {
-          const userJson = localStorage.getItem("forum_user");
+          const userJson = sessionStorage.getItem("forum_user");
           if (!userJson) throw new Error("You are not logged in.");
           const loggedInUser = JSON.parse(userJson);
 
@@ -121,8 +127,8 @@ export default function Home() {
   };
 
   const handleLogout = () => {
-    localStorage.removeItem("forum_token");
-    localStorage.removeItem("forum_user");
+    sessionStorage.removeItem("forum_token");
+    sessionStorage.removeItem("forum_user");
     navigate("/login");
   };
 
@@ -193,13 +199,22 @@ export default function Home() {
 
         <div className="questionList">
           {questions.map((q, index) => (
-            <div key={index} className="questionCard" onClick={() => navigate(`/question/${q.Id}`)} style={{ cursor: 'pointer' }}>
+            <div
+              key={index}
+              className="questionCard"
+              onClick={() => navigate(`/question/${q.Id}`)}
+              style={{ cursor: "pointer" }}
+            >
               <div className="voteColumn">
-                <span className={`voteArrow ${q.UserVote === 1 ? 'active-upvote' : ''}`}>
+                <span
+                  className={`voteArrow ${q.UserVote === 1 ? "active-upvote" : ""}`}
+                >
                   ▲
                 </span>
                 <span className="voteCount">{q.VoteCount}</span>
-                <span className={`voteArrow ${q.UserVote === -1 ? 'active-downvote' : ''}`}>
+                <span
+                  className={`voteArrow ${q.UserVote === -1 ? "active-downvote" : ""}`}
+                >
                   ▼
                 </span>
               </div>

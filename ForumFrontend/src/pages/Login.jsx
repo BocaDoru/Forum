@@ -19,8 +19,8 @@ export default function Login() {
 
     try {
       const data = await loginUser(email, password);
-      localStorage.setItem("forum_token", data.JwtToken);
-      localStorage.setItem("forum_user", JSON.stringify(data.User));
+      sessionStorage.setItem("forum_token", data.JwtToken);
+      sessionStorage.setItem("forum_user", JSON.stringify(data.User));
 
       navigate("/home");
     } catch (err) {

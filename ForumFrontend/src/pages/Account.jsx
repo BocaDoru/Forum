@@ -7,7 +7,7 @@ import Header from "../components/Header";
 
 export default function Account() {
     const navigate = useNavigate();
-    const user = JSON.parse(localStorage.getItem("forum_user"));
+    const user = JSON.parse(sessionStorage.getItem("forum_user"));
 
     const [newUsername, setNewUsername] = useState(user?.Username || "");
     const [oldPassword, setOldPassword] = useState("");
@@ -29,7 +29,7 @@ export default function Account() {
         try {
             await updateUsername(newUsername);
             const updatedUser = { ...user, Username: newUsername };
-            localStorage.setItem("forum_user", JSON.stringify(updatedUser));
+            sessionStorage.setItem("forum_user", JSON.stringify(updatedUser));
             setUsernameSuccess("Username updated successfully.");
         } catch (err) {
             setUsernameError(err.message);
@@ -54,8 +54,8 @@ export default function Account() {
         if (!window.confirm("Are you sure you want to delete your account? This cannot be undone.")) return;
         try {
             await deleteUser();
-            localStorage.removeItem("forum_token");
-            localStorage.removeItem("forum_user");
+            sessionStorage.removeItem("forum_token");
+            sessionStorage.removeItem("forum_user");
             navigate("/login");
         } catch (err) {
             alert(err.message);

@@ -3,12 +3,12 @@ import "../style/Header.css";
 
 export default function Header() {
     const navigate = useNavigate();
-    const token = localStorage.getItem("forum_token");
-    const user = JSON.parse(localStorage.getItem("forum_user"));
+    const token = sessionStorage.getItem("forum_token");
+    const user = JSON.parse(sessionStorage.getItem("forum_user"));
 
     const handleLogout = () => {
-        localStorage.removeItem("forum_token");
-        localStorage.removeItem("forum_user");
+        sessionStorage.removeItem("forum_token");
+        sessionStorage.removeItem("forum_user");
         navigate("/login");
     };
 
