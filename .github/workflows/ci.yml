@@ -38,6 +38,15 @@ jobs:
   backend-e2e-pipeline:
     name: Backend Build & E2E Tests (Docker Compose)
     runs-on: ubuntu-latest
+    env:
+      # docker-compose.yml reads its secrets from the environment (locally: ForumBackend/.env).
+      # CI has no .env, so it gets a throwaway key here; the E2E tests send no emails or SMS.
+      JWT_SECRET_KEY: ci-only-jwt-signing-key-not-used-anywhere-else
+      BREVO_API_KEY: ""
+      BREVO_EMAIL_FROM: ""
+      VONAGE_API_KEY: ""
+      VONAGE_API_SECRET: ""
+      VONAGE_TARGET_PHONE_NUMBER: ""
     defaults:
       run:
         working-directory: ForumBackend
