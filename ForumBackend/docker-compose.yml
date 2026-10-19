@@ -32,7 +32,7 @@ services:
       - "8080:8080"
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - SecretKey=a_very_secret_key_that_must_be_long_and_complex
+      - SecretKey=${JWT_SECRET_KEY:?set it in .env (see .env.example)}
       - GrpcServices__UsersService=http://users:8080
       - GrpcServices__ForumService=http://forum:8080
       - GrpcServices__ImagesService=http://images:8080
@@ -50,15 +50,16 @@ services:
       - "5001:8080"           
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
+      - SecretKey=${JWT_SECRET_KEY:?set it in .env (see .env.example)}
       - MongoDB__ConnectionString=mongodb://mongo:27017/
       - MongoDB__DatabaseName=users
-      - BrevoSettings__ApiKey=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
+      - BrevoSettings__ApiKey=${BREVO_API_KEY}
       - BrevoSettings__ApiUrl=https://api.brevo.com/v3/smtp/email
-      - BrevoSettings__EmailFrom=bocaioandoru12@gmail.com
+      - BrevoSettings__EmailFrom=${BREVO_EMAIL_FROM}
       - BrevoSettings__SenderName=Forum
-      - VonageSettings__ApiKey=bc2a44d4
-      - VonageSettings__ApiSecret=RKO3mvpBrLkYR5Xs
-      - VonageSettings__TargetPhoneNumber=40753586556
+      - VonageSettings__ApiKey=${VONAGE_API_KEY}
+      - VonageSettings__ApiSecret=${VONAGE_API_SECRET}
+      - VonageSettings__TargetPhoneNumber=${VONAGE_TARGET_PHONE_NUMBER}
       - VonageSettings__SenderName=Vonage APIs
     depends_on:
       - mongo

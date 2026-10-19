@@ -19,7 +19,7 @@ export default function Account() {
     const [passwordSuccess, setPasswordSuccess] = useState("");
 
     useEffect(() => {
-        getUserScore().then(data => setScore(data.Score)).catch(() => {});
+        getUserScore(user?.Id).then(data => setScore(data)).catch(() => {});
     }, []);
 
     const handleUpdateUsername = async (e) => {

@@ -68,6 +68,7 @@ export default function AskQuestion() {
                     }
                 } catch (err) {
                     setError("Failed to load question for editing.");
+      setIsLoading(false);
                 } finally {
                     setIsLoading(false);
                 }
@@ -112,6 +113,7 @@ export default function AskQuestion() {
 
         if (tags.length === 0) {
             setError("You must add at least one tag.");
+      setIsLoading(false);
             return;
         }
 
@@ -146,6 +148,7 @@ export default function AskQuestion() {
 
         } catch (err) {
             setError(err.message || "An error occurred while saving your question.");
+      setIsLoading(false);
         } finally {
             setIsLoading(false);
         }

@@ -115,6 +115,7 @@ export default function QuestionDetail() {
         setComments(commentsWithAuthors);
       } catch (err) {
         setError("Failed to load question details.");
+      setIsLoading(false);
       } finally {
         setIsLoading(false);
       }

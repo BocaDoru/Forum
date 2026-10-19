@@ -61,6 +61,7 @@ export default function Home() {
       await hydrateAndSetQuestions(data);
     } catch (err) {
       setError(err.message || "Failed to load questions.");
+      setIsLoading(false);
     } finally {
       setIsLoading(false);
     }
@@ -115,6 +116,7 @@ export default function Home() {
         setError(
           err.message || "Failed to apply filter. Check your search term.",
         );
+      setIsLoading(false);
       }
     } finally {
       setIsLoading(false);

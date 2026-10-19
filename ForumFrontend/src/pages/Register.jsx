@@ -30,6 +30,7 @@ export default function Register() {
       console.log(`Registration successful! Welcome ${user.Username}`);
     } catch (err) {
       setError(err.message);
+      setIsLoading(false);
     } finally {
       setIsLoading(false);
     }

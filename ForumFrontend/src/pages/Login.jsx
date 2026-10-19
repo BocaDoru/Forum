@@ -25,6 +25,7 @@ export default function Login() {
       navigate("/home");
     } catch (err) {
       setError(err.message);
+      setIsLoading(false);
     } finally {
       setIsLoading(false);
     }

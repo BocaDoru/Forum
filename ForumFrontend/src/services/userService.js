@@ -31,8 +31,8 @@ export const deleteUser = async () => {
     });
 };
 
-export const getUserScore = async () => {
-    return apiClient('/users/score', {
+export const getUserScore = async (userId) => {
+    return apiClient(`/users/score/${userId}`, {
         method: 'GET',
     });
 };
